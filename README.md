@@ -11,6 +11,7 @@ flowchart TD
 
   MERGE["Combine Data and Clean Up"]
   FE["Prepare Data (fix gaps, standardize)"]
+  SYN["Add Synthetic Unrealistic Examples (~5-10% of dataset)"]
   SPLIT["Split Data for Learning and Testing"]
 
   TRAIN["Train the Model (teach computer patterns)"]
@@ -23,7 +24,7 @@ flowchart TD
   K2  --> MERGE
   TESS --> MERGE
 
-  MERGE --> FE --> SPLIT
+  MERGE --> FE --> SYN --> SPLIT
   SPLIT --> TRAIN --> CKPT --> EVAL --> ART
 
   %% Classes
@@ -34,7 +35,7 @@ flowchart TD
   classDef art   fill:#fff3e0,stroke:#b7791f,stroke-width:2px,color:#000,font-size:13px,font-weight:600;
 
   class KEP,K2,TESS data;
-  class MERGE,FE,SPLIT prep;
+  class MERGE,FE,SYN,SPLIT prep;
   class TRAIN,CKPT train;
   class EVAL eval;
   class ART art;
