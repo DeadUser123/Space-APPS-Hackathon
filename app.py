@@ -62,6 +62,9 @@ def load_processed_dataset():
     features = df.drop(columns=['disposition']).values.astype(np.float32)
     return features, labels
 
+features_all, _ = load_processed_dataset()
+FEATURE_MIN = features_all.min(axis=0)
+FEATURE_MAX = features_all.max(axis=0)
 
 def get_test_split(test_ratio: float = 0.1, seed: int = 42):
     """Return a deterministic test split for evaluation visualizations."""
@@ -123,8 +126,9 @@ def preprocess_input(data_dict):
     """Preprocess input data for prediction"""
     # Create feature vector in correct order
     features = []
-    for fname in feature_names:
+    for i, fname in enumerate(feature_names):
         val = data_dict.get(fname, 0.0)
+        val = max(FEATURE_MIN[i], min(FEATURE_MAX[i], val)) # prevent unrealistic values since model is terrible at extrapolation
         try:
             features.append(float(val))
         except (ValueError, TypeError):
