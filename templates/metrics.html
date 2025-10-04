@@ -24,12 +24,7 @@
     <div class="container main-content">
         <h2 class="page-title">Model Performance Metrics</h2>
         
-        <div id="loading" class="loading">
-            <div class="spinner"></div>
-            <p>Loading metrics...</p>
-        </div>
-
-        <div id="metrics-content" style="display: none;">
+        <div id="metrics-content">
             <!-- Model Info Card -->
             <div class="metrics-info-card">
                 <h3>Model Information</h3>
@@ -47,42 +42,41 @@
                 </div>
                 <div class="visualization-card">
                     <h4>Core Classification Metrics</h4>
-                    <img id="metrics-plot" src="" alt="Performance Metrics">
+                    <img id="metrics-plot" src="{{ url_for('static', filename='images/metrics/metrics.png') }}" alt="Performance Metrics">
                 </div>
             </div>
 
             <div class="metrics-section multi-grid">
                 <div class="visualization-card">
                     <h4>Confusion Matrix</h4>
-                    <img id="confusion-matrix" src="" alt="Confusion Matrix">
+                    <img id="confusion-matrix" src="{{ url_for('static', filename='images/metrics/confusion_matrix.png') }}" alt="Confusion Matrix">
                 </div>
                 <div class="visualization-card">
                     <h4>ROC Curve</h4>
-                    <img id="roc-curve" src="" alt="ROC Curve">
+                    <img id="roc-curve" src="{{ url_for('static', filename='images/metrics/roc_curve.png') }}" alt="ROC Curve">
                 </div>
             </div>
 
             <div class="metrics-section multi-grid">
                 <div class="visualization-card">
                     <h4>Feature Influence</h4>
-                    <img id="feature-importance" src="" alt="Feature Influence Plot">
+                    <img id="feature-importance" src="{{ url_for('static', filename='images/metrics/feature_importance.png') }}" alt="Feature Influence Plot">
                 </div>
                 <div class="visualization-card">
                     <h4>Dataset Composition</h4>
-                    <img id="dataset-distribution" src="" alt="Dataset Distribution">
+                    <img id="dataset-distribution" src="{{ url_for('static', filename='images/metrics/dataset_distribution.png') }}" alt="Dataset Distribution">
                 </div>
             </div>
 
             <div class="metrics-section">
                 <div class="visualization-card">
                     <h4>Prediction Confidence Distribution</h4>
-                    <img id="confidence-distribution" src="" alt="Prediction Confidence Distribution">
+                    <img id="confidence-distribution" src="{{ url_for('static', filename='images/metrics/confidence_distribution.png') }}" alt="Prediction Confidence Distribution">
                 </div>
                 <p class="card-subtitle">The model separates true exoplanets from false positives with high confidence, reinforcing screening validity for NASA analysts.</p>
             </div>
             <div class="metrics-footer">
-                <p>All visualizations generated live from the merged Kepler, K2, and TESS datasets using the deployed PyTorch model.</p>
-                <button class="btn btn-secondary" onclick="refreshMetrics()">Refresh Metrics</button>
+                <p>Visualizations are cached as static artifacts for faster page loads.</p>
             </div>
         </div>
     </div>

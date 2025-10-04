@@ -449,6 +449,42 @@ def generate_prediction_confidence_plot():
         print(f"Error generating confidence distribution plot: {e}")
         return None
 
+
+def ensure_static_visualizations(force: bool = False):
+    """Generate and persist visualization PNG files under static/images/metrics.
+
+    This allows the front-end to reference static images instead of calling
+    the /api/visualizations endpoint every page load. Set force=True to
+    regenerate even if files already exist.
+    """
+    try:
+        output_dir = os.path.join('static', 'images', 'metrics')
+        os.makedirs(output_dir, exist_ok=True)
+
+        generators = {
+            'metrics.png': generate_metrics_plot,
+            'confusion_matrix.png': generate_confusion_matrix_plot,
+            'roc_curve.png': generate_roc_curve_plot,
+            'feature_importance.png': generate_feature_importance_plot,
+            'dataset_distribution.png': generate_dataset_distribution_plot,
+            'confidence_distribution.png': generate_prediction_confidence_plot,
+        }
+
+        for filename, func in generators.items():
+            out_path = os.path.join(output_dir, filename)
+            if not force and os.path.exists(out_path):
+                continue
+            b64_img = func()
+            if not b64_img:
+                continue
+            try:
+                with open(out_path, 'wb') as f:
+                    f.write(base64.b64decode(b64_img))
+            except Exception as write_err:
+                print(f"Failed writing {filename}: {write_err}")
+    except Exception as e:
+        print(f"Error ensuring static visualizations: {e}")
+
 @app.route('/')
 def index():
     """Home page"""
@@ -567,6 +603,8 @@ if __name__ == '__main__':
     print("=" * 70)
     
     # Use PORT environment variable (set by hosting providers). Default to 5000 for local dev.
+    # Generate static visualizations once so frontend can use static PNGs.
+    ensure_static_visualizations(force=False)
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_DEBUG', 'True').lower() in ('1', 'true', 'yes')
     app.run(debug=debug, host='0.0.0.0', port=port)
