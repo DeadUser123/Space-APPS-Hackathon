@@ -20,7 +20,7 @@ class SimpleNN(nn.Module):
         self.fc1 = nn.Linear(input_dim, 32)
         self.fc2 = nn.Linear(32, 16)
         self.dropout = nn.Dropout(p_dropout)
-        self.fc3 = nn.Linear(16, 2)
+        self.fc3 = nn.Linear(16, 1)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -62,7 +62,7 @@ def load_dataset():
     feature_names = list(feature_info.keys())
 
     # synthetic examples of unrealistics
-    num_synthetic = int(0.025 * len(features))
+    num_synthetic = int(0.1 * len(features))
     synthetic_X = np.zeros((num_synthetic, features.shape[1]), dtype=float)
     synthetic_y = np.zeros(num_synthetic, dtype=int)  # always False Positive
 
@@ -88,9 +88,9 @@ def load_dataset():
     X_test, y_test = features[test_idx], labels[test_idx]
 
     X_train_t = torch.tensor(X_train, dtype=torch.float32)
-    y_train_t = torch.tensor(y_train, dtype=torch.long)
+    y_train_t = torch.tensor(y_train, dtype=torch.float32).unsqueeze(1)
+    y_test_t = torch.tensor(y_test, dtype=torch.float32).unsqueeze(1)
     X_test_t = torch.tensor(X_test, dtype=torch.float32)
-    y_test_t = torch.tensor(y_test, dtype=torch.long)
 
     train_ds = TensorDataset(X_train_t, y_train_t)
     test_ds = TensorDataset(X_test_t, y_test_t)
@@ -104,7 +104,6 @@ def load_dataset():
         "train_size": len(train_ds),
         "test_size": len(test_ds),
     }
-
 
     
 def train(epoch = 0):
@@ -146,18 +145,21 @@ def test():
         for data, target in loaders["test"]:
             data, target = data.to(device), target.to(device)
             output = model(data)
-            test_loss += loss_fn(output, target).item() * data.size(0)
-            
-            # Get probabilities for ROC-AUC
-            probs = F.softmax(output, dim=1)
-            all_probs.extend(probs[:, 1].cpu().numpy().tolist())  # probability of class 1
-            
-            pred = output.argmax(dim=1)
-            correct += pred.eq(target).sum().item()
 
-            # store for metrics
-            all_preds.extend(pred.cpu().numpy().tolist())
-            all_targets.extend(target.cpu().numpy().tolist())
+            # Compute loss
+            loss = loss_fn(output, target)
+            test_loss += loss.item() * data.size(0)
+
+            # Sigmoid for probabilities
+            probs = torch.sigmoid(output)
+            pred = (probs > 0.5).long()
+
+            all_probs.extend(probs.cpu().numpy().flatten().tolist())
+            all_preds.extend(pred.cpu().numpy().flatten().tolist())
+            all_targets.extend(target.cpu().numpy().flatten().tolist())
+
+            # Count correct predictions
+            correct += (pred.cpu() == target.cpu().long()).sum().item()
 
     test_loss = test_loss / loaders_info['test_size']
     acc = correct / loaders_info['test_size'] if loaders_info['test_size'] > 0 else 0.0
@@ -208,7 +210,7 @@ if __name__ == "__main__":
     model = SimpleNN(input_dim=input_dim).to(device)
     optimizer = optim.Adam(model.parameters(), lr=0.001)
     # outputs are raw logits; use CrossEntropyLoss which expects class indices as targets
-    loss_fn = nn.CrossEntropyLoss()
+    loss_fn = nn.BCEWithLogitsLoss()
     # checkpointing setup
     checkpoint_dir = 'checkpoints'
     best_acc = 0.8 # default 80%

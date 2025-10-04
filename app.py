@@ -29,7 +29,7 @@ class SimpleNN(nn.Module):
         self.fc1 = nn.Linear(input_dim, out_features=32)
         self.fc2 = nn.Linear(32, 16)
         self.dropout = nn.Dropout(p_dropout)
-        self.fc3 = nn.Linear(16, 2)
+        self.fc3 = nn.Linear(16, 1)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -160,25 +160,28 @@ def predict_single(features):
             if torch.isnan(scaled_output).any() or torch.isinf(scaled_output).any():
                 scaled_output = torch.nan_to_num(scaled_output, nan=0.0, posinf=1e6, neginf=-1e6)
 
-            probs = F.softmax(scaled_output, dim=1)
+            # Apply sigmoid for binary probability
+            prob_exoplanet = torch.sigmoid(scaled_output).item()
+            prob_false = 1.0 - prob_exoplanet
 
-            # Clamp probabilities and guard against numerical issues
-            probs = probs.clamp(0.0 + 1e-8, 1.0 - 1e-8)
+            pred = int(prob_exoplanet > 0.5)
+            confidence = prob_exoplanet if pred == 1 else prob_false
 
-            # If probabilities are not finite for some reason, fall back to uniform
-            if not torch.isfinite(probs).all():
-                probs = torch.tensor([[0.5, 0.5]], dtype=torch.float32)
-
-            pred = int(probs.argmax(dim=1).item())
-            confidence = float(probs[0][pred].item())
+            # Simple OOD flag if outside expected feature ranges
+            ood_flag = any(
+                f < FEATURE_MIN[i] * 0.9 or f > FEATURE_MAX[i] * 1.1
+                for i, f in enumerate(features.flatten())
+            )
 
             return {
                 'prediction': 'Exoplanet' if pred == 1 else 'False Positive',
                 'prediction_class': int(pred),
                 'confidence': float(confidence),
-                'probability_false_positive': float(probs[0][0].item()),
-                'probability_exoplanet': float(probs[0][1].item())
+                'probability_false_positive': float(prob_false),
+                'probability_exoplanet': float(prob_exoplanet),
+                'is_ood': ood_flag
             }
+
     except Exception as e:
         # In case of any error, return a safe default
         print(f"Error during prediction: {e}")
@@ -200,8 +203,9 @@ def generate_confusion_matrix_plot():
         with torch.no_grad():
             X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
             outputs = model(X_test_tensor)
-            predictions = outputs.argmax(dim=1).cpu().numpy()
-        
+            probs = torch.sigmoid(outputs).cpu().numpy().flatten()
+            predictions = (probs > 0.5).astype(int)
+
         # Generate confusion matrix
         cm = confusion_matrix(y_test, predictions)
         
@@ -236,7 +240,7 @@ def generate_roc_curve_plot():
         with torch.no_grad():
             X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
             outputs = model(X_test_tensor)
-            probs = F.softmax(outputs, dim=1)[:, 1].cpu().numpy()
+            probs = torch.sigmoid(outputs).cpu().numpy().flatten()
         
         # Calculate ROC curve
         fpr, tpr, _ = roc_curve(y_test, probs)
