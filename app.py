@@ -16,7 +16,7 @@ from datetime import datetime
 import os
 import json
 from functools import lru_cache
-import requests
+# requests removed: not required at module import time to avoid dependency issues
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
@@ -139,6 +139,12 @@ def preprocess_input(data_dict):
 
 def predict_single(features):
     """Make prediction for a single sample"""
+    # Ensure model is loaded; under Gunicorn the __main__ block won't run, so load on demand
+    if globals().get('model', None) is None:
+        loaded = load_model_checkpoint()
+        if not loaded:
+            raise RuntimeError('Model is not loaded on the server. Ensure checkpoints/best.pth is present.')
+
     try:
         with torch.no_grad():
             # Convert features to tensor (ensure correct shape)
