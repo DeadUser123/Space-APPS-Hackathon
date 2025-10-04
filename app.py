@@ -472,6 +472,12 @@ def api_visualizations():
         'confidence_distribution': generate_prediction_confidence_plot()
     })
 
+
+@app.route('/healthz')
+def healthz():
+    """Lightweight health check for hosting providers"""
+    return jsonify({'status': 'ok'}), 200
+
 if __name__ == '__main__':
     print("=" * 70)
     print("GQ PLANETS - EXOPLANET DETECTION WEB INTERFACE")
