@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -18,6 +19,8 @@ from functools import lru_cache
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+# Allow cross-origin requests so a static frontend (e.g. GitHub Pages) can call the API
+CORS(app)
 
 # Model definition (same as training.py)
 class SimpleNN(nn.Module):
@@ -489,4 +492,7 @@ if __name__ == '__main__':
     print("📱 Open your browser and navigate to: http://localhost:5000")
     print("=" * 70)
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Use PORT environment variable (set by hosting providers). Default to 5000 for local dev.
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_DEBUG', 'True').lower() in ('1', 'true', 'yes')
+    app.run(debug=debug, host='0.0.0.0', port=port)
