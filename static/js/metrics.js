@@ -1,37 +1,17 @@
-// Metrics page JavaScript
+// Metrics page JavaScript (static visualization mode)
 
-// Load metrics on page load
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadMetrics();
+    await loadModelInfo();
+    // Content is already visible; images are static in HTML.
 });
 
-async function loadMetrics() {
+async function loadModelInfo() {
     try {
-        // Load model info
-        const infoResponse = await fetch('/api/model_info');
-        const modelInfo = await infoResponse.json();
-        
-        // Display model info
-        displayModelInfo(modelInfo);
-        
-        // Load visualizations
-        const vizResponse = await fetch('/api/visualizations');
-        const visualizations = await vizResponse.json();
-        
-        // Display visualizations
-        displayVisualizations(visualizations);
-        
-        // Hide loading, show content
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('metrics-content').style.display = 'block';
-        
-    } catch (error) {
-        console.error('Error loading metrics:', error);
-        document.getElementById('loading').innerHTML = `
-            <p style="color: var(--danger);">
-                Error loading metrics. Make sure the model is trained and the server is running.
-            </p>
-        `;
+        const resp = await fetch('/api/model_info');
+        const info = await resp.json();
+        displayModelInfo(info);
+    } catch (e) {
+        console.error('Failed to load model info', e);
     }
 }
 
@@ -79,38 +59,4 @@ function displayModelInfo(info) {
     `;
 }
 
-function displayVisualizations(viz) {
-    // Display metrics plot
-    if (viz.metrics) {
-        document.getElementById('metrics-plot').src = 'data:image/png;base64,' + viz.metrics;
-    }
-    
-    // Display confusion matrix
-    if (viz.confusion_matrix) {
-        document.getElementById('confusion-matrix').src = 'data:image/png;base64,' + viz.confusion_matrix;
-    }
-    
-    // Display ROC curve
-    if (viz.roc_curve) {
-        document.getElementById('roc-curve').src = 'data:image/png;base64,' + viz.roc_curve;
-    }
-
-    if (viz.feature_importance) {
-        document.getElementById('feature-importance').src = 'data:image/png;base64,' + viz.feature_importance;
-    }
-
-    if (viz.dataset_distribution) {
-        document.getElementById('dataset-distribution').src = 'data:image/png;base64,' + viz.dataset_distribution;
-    }
-
-    if (viz.confidence_distribution) {
-        document.getElementById('confidence-distribution').src = 'data:image/png;base64,' + viz.confidence_distribution;
-    }
-}
-
-// Refresh metrics
-async function refreshMetrics() {
-    document.getElementById('loading').style.display = 'block';
-    document.getElementById('metrics-content').style.display = 'none';
-    await loadMetrics();
-}
+// No visualization JS needed; images are static.
