@@ -1,2 +1,1 @@
-# Space APPS Hackathon
-
+# Space APPS Hackathon - GQ Planets

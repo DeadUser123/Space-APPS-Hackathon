@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GQ Planets - Predict Exoplanet</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>GQ Planets</h1>
+                <p class="tagline">NASA Space Apps Challenge 2025</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/predict" class="active">Predict</a></li>
+                <li><a href="/metrics">Metrics</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container main-content">
+        <h2 class="page-title">Make a Prediction</h2>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('single')">Single Prediction</button>
+            <button class="tab-btn" onclick="showTab('batch')">Batch Upload</button>
+        </div>
+
+        <!-- Single Prediction Tab -->
+        <div id="single-tab" class="tab-content active">
+            <div class="prediction-form">
+                <h3>Enter Exoplanet Parameters</h3>
+                <form id="predict-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="orbital_period">Orbital Period (days)</label>
+                            <input type="number" step="any" id="orbital_period" name="orbital_period" placeholder="e.g., 3.52" required>
+                            <small>Time for planet to complete one orbit</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="transit_duration">Transit Duration (hours)</label>
+                            <input type="number" step="any" id="transit_duration" name="transit_duration" placeholder="e.g., 2.5">
+                            <small>Duration of transit across star</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="transit_depth">Transit Depth (ppm)</label>
+                            <input type="number" step="any" id="transit_depth" name="transit_depth" placeholder="e.g., 1200">
+                            <small>Decrease in star brightness</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="planet_radius">Planet Radius (Earth radii)</label>
+                            <input type="number" step="any" id="planet_radius" name="planet_radius" placeholder="e.g., 1.2" required>
+                            <small>Planet size relative to Earth</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="semi_major_axis">Semi-Major Axis (AU)</label>
+                            <input type="number" step="any" id="semi_major_axis" name="semi_major_axis" placeholder="e.g., 0.05">
+                            <small>Average distance from star</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="insolation_flux">Insolation Flux (Earth flux)</label>
+                            <input type="number" step="any" id="insolation_flux" name="insolation_flux" placeholder="e.g., 300">
+                            <small>Stellar radiation received</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="equilibrium_temp">Equilibrium Temperature (K)</label>
+                            <input type="number" step="any" id="equilibrium_temp" name="equilibrium_temp" placeholder="e.g., 1500">
+                            <small>Estimated planet temperature</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="stellar_teff">Stellar Temperature (K)</label>
+                            <input type="number" step="any" id="stellar_teff" name="stellar_teff" placeholder="e.g., 5778" required>
+                            <small>Host star surface temperature</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="stellar_radius">Stellar Radius (Solar radii)</label>
+                            <input type="number" step="any" id="stellar_radius" name="stellar_radius" placeholder="e.g., 1.0">
+                            <small>Star size relative to Sun</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="stellar_logg">Stellar log(g)</label>
+                            <input type="number" step="any" id="stellar_logg" name="stellar_logg" placeholder="e.g., 4.5">
+                            <small>Stellar surface gravity</small>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-large">Predict</button>
+                        <button type="button" class="btn btn-secondary" onclick="loadExample()">Load Example</button>
+                        <button type="reset" class="btn btn-secondary">Clear</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results" class="results-section" style="display: none;">
+                <h3>Prediction Results</h3>
+                <div class="result-card" id="result-content">
+                    <!-- Results will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Batch Upload Tab -->
+        <div id="batch-tab" class="tab-content">
+            <div class="upload-section">
+                <h3>Upload CSV File for Batch Predictions</h3>
+                <p>Upload a CSV file containing exoplanet candidates. The file should include the following columns:</p>
+                <div class="csv-info">
+                    <code>orbital_period, transit_duration, transit_depth, planet_radius, semi_major_axis, 
+insolation_flux, equilibrium_temp, stellar_teff, stellar_radius, stellar_logg</code>
+                </div>
+                <form id="batch-form" enctype="multipart/form-data">
+                    <div class="file-upload">
+                        <input type="file" id="csv-file" name="file" accept=".csv" required>
+                        <label for="csv-file" class="file-label">
+                            <span id="file-name">Choose CSV file...</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">Process File</button>
+                </form>
+            </div>
+
+            <!-- Batch Results -->
+            <div id="batch-results" class="batch-results-section" style="display: none;">
+                <h3>Batch Prediction Results</h3>
+                <div class="batch-stats" id="batch-stats"></div>
+                <div class="batch-table-container">
+                    <table id="batch-table" class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Row</th>
+                                <th>Prediction</th>
+                                <th>Confidence</th>
+                                <th>Exoplanet Probability</th>
+                            </tr>
+                        </thead>
+                        <tbody id="batch-table-body">
+                            <!-- Results will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-secondary" onclick="downloadResults()">Download Results</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <div>
+                <p>&copy; 2025 NASA Space Apps Challenge &mdash; GQ Planets</p>
+                <p>Powered by PyTorch, Flask, Matplotlib, and NASA Exoplanet Archive datasets.</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://exoplanetarchive.ipac.caltech.edu/" target="_blank" rel="noopener">NASA Exoplanet Archive</a>
+                <a href="https://www.spaceappschallenge.org/" target="_blank" rel="noopener">Space Apps Resources</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/predict.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GQ Planets - NASA Space Apps 2025</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>GQ Planets</h1>
+                <p class="tagline">NASA Space Apps Challenge 2025</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/predict">Predict</a></li>
+                <li><a href="/metrics">Metrics</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h2 class="hero-title">GQ Planets: AI-Powered Exoplanet Detection for NASA</h2>
+                <p class="hero-subtitle">Operational decision support that screens Kepler, K2, and TESS light curves in seconds instead of hours.</p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary" href="/predict">Run a Live Prediction</a>
+                    <a class="btn btn-secondary" href="/metrics">View Model Evidence</a>
+                </div>
+                <div class="hero-note">
+                    <strong>U.S. Government Shutdown Update:</strong> The 2025 NASA Space Apps Challenge will take place as scheduled on October 4–5. Support continues on Space Apps Connect and via email.
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <span class="stat-label">Accuracy</span>
+                    <span class="stat-value">82.95%</span>
+                    <span class="stat-caption">Best checkpoint performance</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Confirmed Exoplanets</span>
+                    <span class="stat-value">5,599</span>
+                    <span class="stat-caption">Baseline from NASA Exoplanet Archive</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Candidate Alerts</span>
+                    <span class="stat-value">4,883</span>
+                    <span class="stat-caption">Automatically prioritized for review</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Observations Processed</span>
+                    <span class="stat-value">18,413</span>
+                    <span class="stat-caption">Merged Kepler, K2, and TESS samples</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="section challenge-highlights">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Ready for Judging</h2>
+                    <p>Clear alignment with the 2025 NASA Space Apps Challenge scoring rubric.</p>
+                </div>
+                <div class="judging-grid">
+                    <div class="judging-card">
+                        <h3>Impact</h3>
+                        <p>Automates manual triage with 92.08% recall so mission scientists can surface true exoplanets faster.</p>
+                        <ul>
+                            <li>Batch CSV upload for bulk analysis</li>
+                            <li>Confidence scores for every prediction</li>
+                            <li>Live charts communicating findings</li>
+                        </ul>
+                    </div>
+                    <div class="judging-card">
+                        <h3>Creativity</h3>
+                        <p>Combines NASA’s historical missions with ML explainability to spotlight orbital drivers.</p>
+                        <ul>
+                            <li>Feature influence visualization</li>
+                            <li>Interactive challenge briefing</li>
+                            <li>Mission-inspired UI language</li>
+                        </ul>
+                    </div>
+                    <div class="judging-card">
+                        <h3>Validity</h3>
+                        <p>PyTorch model validated on held-out data with ROC-AUC of 0.8572 and clarity on class balance.</p>
+                        <ul>
+                            <li>Confusion matrix + ROC curve</li>
+                            <li>Dataset composition analytics</li>
+                            <li>Prediction confidence heatmap</li>
+                        </ul>
+                    </div>
+                    <div class="judging-card">
+                        <h3>Relevance</h3>
+                        <p>Purpose-built for “A World Away: Hunting for Exoplanets with AI” using NASA open data.</p>
+                        <ul>
+                            <li>Kepler, K2, TESS integration</li>
+                            <li>Transit method feature set</li>
+                            <li>Mission briefing & resource links</li>
+                        </ul>
+                    </div>
+                    <div class="judging-card">
+                        <h3>Presentation</h3>
+                        <p>Professional black, white, and blue interface with clear calls-to-action and evidence panels.</p>
+                        <ul>
+                            <li>Responsive hero + stat counters</li>
+                            <li>Single & batch prediction demos</li>
+                            <li>Downloadable results for judges</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section mission-brief">
+            <div class="container two-column">
+                <div class="brief-card">
+                    <h2>Challenge Mission Brief</h2>
+                    <p>The NASA challenge calls for an AI/ML pipeline that classifies exoplanets, surfaces metrics, and offers a web experience where researchers can explore the model. This interface delivers that mission with clarity.</p>
+                    <ul class="brief-list">
+                        <li>Summaries for 2025 NASA Space Apps Challenge &ldquo;A World Away: Hunting for Exoplanets with AI.&rdquo;</li>
+                        <li>Dataset deep dive across orbital period, transit duration, depth, and stellar parameters.</li>
+                        <li>Manual entry + CSV ingestion to mirror real analyst workflows.</li>
+                        <li>Matplotlib visualizations embedded across the product for immediate evidence.</li>
+                    </ul>
+                </div>
+                <div class="brief-card">
+                    <h2>Latest Event Update</h2>
+                    <p>NASA Space Apps is funded by NASA's Earth Science Division through a contract with Booz Allen Hamilton, Mindgrub, and SecondMuse.</p>
+                    <div class="update-block">
+                        <h4>2025 NASA Space Apps Challenge</h4>
+                        <p><strong>Event:</strong> October 4&ndash;5, 2025 &bull; <strong>Difficulty:</strong> Advanced</p>
+                        <p><strong>Subjects:</strong> AI/ML, Data Analysis, Visualization, Extrasolar Objects, Space Exploration</p>
+                        <p class="update-note">Support for your questions continues on Space Apps Connect and via email throughout the weekend.</p>
+                    </div>
+                    <a class="link-inline" href="https://www.spaceappschallenge.org/" target="_blank" rel="noopener">Explore the Hackathon &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section feature-showcase">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Mission Capabilities</h2>
+                    <p>All functionality is live in this build for judges to explore.</p>
+                </div>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>Real-Time Screening</h3>
+                        <p>Enter orbital parameters and instantly receive classification with probabilities and rationale.</p>
+                        <span class="feature-tag">Single Prediction</span>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Bulk Candidate Review</h3>
+                        <p>Upload CSVs from the NASA Exoplanet Archive, triage results, and export annotated outcomes.</p>
+                        <span class="feature-tag">Batch Upload</span>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Explainable Insights</h3>
+                        <p>Matplotlib-powered dashboards show feature influence, class balance, and confidence spread.</p>
+                        <span class="feature-tag">Visualization Suite</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section callout">
+            <div class="container callout-content">
+                <div>
+                    <h2>Judges: Try the Workflow</h2>
+                    <p>Walk through a full discovery cycle: inspect mission metrics, submit new orbital data, and download review-ready reports.</p>
+                </div>
+                <div class="callout-actions">
+                    <a class="btn btn-primary" href="/predict">Start With Example Data</a>
+                    <a class="btn btn-secondary" href="/metrics">Audit the Model</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div>
+                <p>&copy; 2025 NASA Space Apps Challenge &mdash; GQ Planets</p>
+                <p>Powered by PyTorch, Flask, Matplotlib, and NASA Exoplanet Archive datasets.</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://exoplanetarchive.ipac.caltech.edu/" target="_blank" rel="noopener">NASA Exoplanet Archive</a>
+                <a href="https://www.spaceappschallenge.org/" target="_blank" rel="noopener">Space Apps Resources</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
