@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GQ Planets - Model Metrics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>GQ Planets</h1>
+                <p class="tagline">NASA Space Apps Challenge 2025</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/predict">Predict</a></li>
+                <li><a href="/metrics" class="active">Metrics</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container main-content">
+        <h2 class="page-title">Model Performance Metrics</h2>
+        
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading metrics...</p>
+        </div>
+
+        <div id="metrics-content" style="display: none;">
+            <!-- Model Info Card -->
+            <div class="metrics-info-card">
+                <h3>Model Information</h3>
+                <p class="card-subtitle">Performance snapshot from the best checkpoint (epoch 457) trained on NASA exoplanet archives.</p>
+                <div class="info-grid" id="model-info">
+                    <!-- Model info will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="metrics-section">
+                <div class="section-header">
+                    <h3>Performance Overview</h3>
+                    <p>Headline metrics demonstrate the reliability needed for mission-critical screening.</p>
+                </div>
+                <div class="visualization-card">
+                    <h4>Core Classification Metrics</h4>
+                    <img id="metrics-plot" src="" alt="Performance Metrics">
+                </div>
+            </div>
+
+            <div class="metrics-section multi-grid">
+                <div class="visualization-card">
+                    <h4>Confusion Matrix</h4>
+                    <img id="confusion-matrix" src="" alt="Confusion Matrix">
+                </div>
+                <div class="visualization-card">
+                    <h4>ROC Curve</h4>
+                    <img id="roc-curve" src="" alt="ROC Curve">
+                </div>
+            </div>
+
+            <div class="metrics-section multi-grid">
+                <div class="visualization-card">
+                    <h4>Feature Influence</h4>
+                    <img id="feature-importance" src="" alt="Feature Influence Plot">
+                </div>
+                <div class="visualization-card">
+                    <h4>Dataset Composition</h4>
+                    <img id="dataset-distribution" src="" alt="Dataset Distribution">
+                </div>
+            </div>
+
+            <div class="metrics-section">
+                <div class="visualization-card">
+                    <h4>Prediction Confidence Distribution</h4>
+                    <img id="confidence-distribution" src="" alt="Prediction Confidence Distribution">
+                </div>
+                <p class="card-subtitle">The model separates true exoplanets from false positives with high confidence, reinforcing screening validity for NASA analysts.</p>
+            </div>
+            <div class="metrics-footer">
+                <p>All visualizations generated live from the merged Kepler, K2, and TESS datasets using the deployed PyTorch model.</p>
+                <button class="btn btn-secondary" onclick="refreshMetrics()">Refresh Metrics</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <div>
+                <p>&copy; 2025 NASA Space Apps Challenge &mdash; GQ Planets</p>
+                <p>Powered by PyTorch, Flask, Matplotlib, and NASA Exoplanet Archive datasets.</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://exoplanetarchive.ipac.caltech.edu/" target="_blank" rel="noopener">NASA Exoplanet Archive</a>
+                <a href="https://www.spaceappschallenge.org/" target="_blank" rel="noopener">Space Apps Resources</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/metrics.js') }}"></script>
+</body>
+</html>
