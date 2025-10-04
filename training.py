@@ -260,7 +260,7 @@ if __name__ == "__main__":
             save_checkpoint(state, is_best=True, checkpoint_dir=checkpoint_dir, filename=f'checkpoint_epoch_{epoch}.pth')
             print(f"✨ New best model! Accuracy: {100. * best_acc:.2f}%")
     
-    # Save metrics to CSV
+    # save metrics to CSV
     metrics_df = pd.DataFrame(metrics_history)
     metrics_df.to_csv('training_metrics.csv', index=False)
     print(f"\n✅ Training complete! Metrics saved to training_metrics.csv")

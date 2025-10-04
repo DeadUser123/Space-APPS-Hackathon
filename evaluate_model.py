@@ -15,7 +15,7 @@ class SimpleNN(nn.Module):
         self.fc1 = nn.Linear(input_dim, 32)
         self.fc2 = nn.Linear(32, 16)
         self.dropout = nn.Dropout(p_dropout)
-        self.fc3 = nn.Linear(16, 2)
+        self.fc3 = nn.Linear(16, 1)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -92,18 +92,24 @@ def evaluate_model(model, test_loader, test_size):
     all_preds = []
     all_targets = []
     all_probs = []
+    
+    correct = 0
 
     with torch.no_grad():
         for data, target in test_loader:
             data, target = data.to(device), target.to(device)
             output = model(data)
-            
-            probs = F.softmax(output, dim=1)
-            all_probs.extend(probs[:, 1].cpu().numpy().tolist())
-            
-            pred = output.argmax(dim=1)
-            all_preds.extend(pred.cpu().numpy().tolist())
-            all_targets.extend(target.cpu().numpy().tolist())
+
+            # Sigmoid for probabilities
+            probs = torch.sigmoid(output)
+            pred = (probs > 0.5).long()
+
+            all_probs.extend(probs.cpu().numpy().flatten().tolist())
+            all_preds.extend(pred.cpu().numpy().flatten().tolist())
+            all_targets.extend(target.cpu().numpy().flatten().tolist())
+
+            # Count correct predictions
+            correct += (pred.cpu() == target.cpu().long()).sum().item()
 
     correct = sum([1 for p, t in zip(all_preds, all_targets) if p == t])
     acc = correct / test_size if test_size > 0 else 0.0
