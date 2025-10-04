@@ -16,6 +16,7 @@ from datetime import datetime
 import os
 import json
 from functools import lru_cache
+# requests removed: not required at module import time to avoid dependency issues
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
@@ -79,9 +80,31 @@ def get_test_split(test_ratio: float = 0.1, seed: int = 42):
 def load_model_checkpoint():
     """Load the trained model from checkpoint"""
     global model, model_metadata
-    checkpoint_path = 'checkpoints/best.pth'
-    
-    if not os.path.exists(checkpoint_path):
+    # Try a few possible locations for the checkpoint so it works under gunicorn
+    possible_paths = [
+        os.path.join('checkpoints', 'best.pth'),
+        os.path.join(os.path.dirname(__file__), 'checkpoints', 'best.pth'),
+        os.path.join(os.getcwd(), 'checkpoints', 'best.pth')
+    ]
+
+    checkpoint_path = None
+    for p in possible_paths:
+        if os.path.exists(p):
+            checkpoint_path = p
+            break
+
+    if checkpoint_path is None:
+        # Print debug info to logs for deployed environment
+        print("Model checkpoint not found. Checked paths:")
+        for p in possible_paths:
+            print(f"  - {p} -> exists={os.path.exists(p)}")
+        print(f"Current working dir: {os.getcwd()}")
+        try:
+            print("Repository root listing:")
+            for name in sorted(os.listdir('.')):
+                print(f"  {name}")
+        except Exception as e:
+            print(f"Error listing repo root: {e}")
         return False
     
     try:
@@ -138,6 +161,12 @@ def preprocess_input(data_dict):
 
 def predict_single(features):
     """Make prediction for a single sample"""
+    # Ensure model is loaded; under Gunicorn the __main__ block won't run, so load on demand
+    if globals().get('model', None) is None:
+        loaded = load_model_checkpoint()
+        if not loaded:
+            raise RuntimeError('Model is not loaded on the server. Ensure checkpoints/best.pth is present.')
+
     try:
         with torch.no_grad():
             # Convert features to tensor (ensure correct shape)
