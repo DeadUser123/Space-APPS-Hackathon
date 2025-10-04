@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Exoplanet Hunter AI - Quick Start Script
-# NASA Space Apps Challenge 2025
+# GQ Planets project
 
 echo "╔══════════════════════════════════════════════════════════════════════╗"
-echo "║          EXOPLANET HUNTER AI - NASA SPACE APPS 2025                 ║"
+echo "║          EXOPLANET HUNTER AI - GQ PLANETS                            ║"
 echo "╚══════════════════════════════════════════════════════════════════════╝"
 echo ""
 
