@@ -134,25 +134,56 @@ def preprocess_input(data_dict):
 
 def predict_single(features):
     """Make prediction for a single sample"""
-    with torch.no_grad():
-        features_tensor = torch.tensor(features, dtype=torch.float32)
-        output = model(features_tensor)
-        
-        # Apply temperature scaling to prevent overconfident predictions
-        # This is a workaround for the overfit model
-        temperature = 100.0  # Higher temperature = more uncertain predictions
-        scaled_output = output / temperature
-        
-        probs = F.softmax(scaled_output, dim=1)
-        pred = scaled_output.argmax(dim=1).item()
-        confidence = probs[0][pred].item()
-        
+    try:
+        with torch.no_grad():
+            # Convert features to tensor (ensure correct shape)
+            features_tensor = torch.tensor(features, dtype=torch.float32)
+
+            # Run model
+            output = model(features_tensor)
+
+            # Temperature scaling (configurable via env var)
+            try:
+                temperature = float(os.environ.get('PRED_TEMPERATURE', 100.0))
+                if temperature <= 0:
+                    temperature = 100.0
+            except Exception:
+                temperature = 100.0
+
+            scaled_output = output / temperature
+
+            # Replace NaN/Inf values and ensure numeric stability
+            if torch.isnan(scaled_output).any() or torch.isinf(scaled_output).any():
+                scaled_output = torch.nan_to_num(scaled_output, nan=0.0, posinf=1e6, neginf=-1e6)
+
+            probs = F.softmax(scaled_output, dim=1)
+
+            # Clamp probabilities and guard against numerical issues
+            probs = probs.clamp(0.0 + 1e-8, 1.0 - 1e-8)
+
+            # If probabilities are not finite for some reason, fall back to uniform
+            if not torch.isfinite(probs).all():
+                probs = torch.tensor([[0.5, 0.5]], dtype=torch.float32)
+
+            pred = int(probs.argmax(dim=1).item())
+            confidence = float(probs[0][pred].item())
+
+            return {
+                'prediction': 'Exoplanet' if pred == 1 else 'False Positive',
+                'prediction_class': int(pred),
+                'confidence': float(confidence),
+                'probability_false_positive': float(probs[0][0].item()),
+                'probability_exoplanet': float(probs[0][1].item())
+            }
+    except Exception as e:
+        # In case of any error, return a safe default
+        print(f"Error during prediction: {e}")
         return {
-            'prediction': 'Exoplanet' if pred == 1 else 'False Positive',
-            'prediction_class': int(pred),
-            'confidence': float(confidence),
-            'probability_false_positive': float(probs[0][0]),
-            'probability_exoplanet': float(probs[0][1])
+            'prediction': 'Unknown',
+            'prediction_class': -1,
+            'confidence': 0.0,
+            'probability_false_positive': 0.5,
+            'probability_exoplanet': 0.5
         }
 
 def generate_confusion_matrix_plot():

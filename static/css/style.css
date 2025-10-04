@@ -406,10 +406,11 @@ ul {
 
 .callout-content h2 {
     font-size: 2rem;
+    color: var(--primary-blue);
 }
 
 .callout-content p {
-    color: rgba(255, 255, 255, 0.75);
+    color: black;
     max-width: 520px;
 }
 
