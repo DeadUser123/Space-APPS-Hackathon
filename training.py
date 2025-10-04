@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
+from torch.utils.data import TensorDataset
 import torch.optim as optim
 import torch.nn.functional as F
 import numpy as np
@@ -29,32 +30,56 @@ class SimpleNN(nn.Module):
         return x
     
 def load_dataset():
-    seed = 42 # prevent model from being retrained on smth else
+    seed = 42
     np.random.seed(seed)
     torch.manual_seed(seed)
-    # Read CSV
-    df = pd.read_csv(DATASET_PATH)
 
-    # Expectation: 'disposition' column is the label (0 or 1). Drop non-numeric columns like 'source'.
+    df = pd.read_csv(DATASET_PATH)
     if 'disposition' not in df.columns:
         raise ValueError("CSV must contain a 'disposition' column with labels 0/1")
 
-    # Drop text/categorical columns that are not numeric
     non_numeric_cols = df.select_dtypes(include=['object']).columns.tolist()
-    # keep 'disposition' even if it's object-y; convert explicitly below
     non_numeric_cols = [c for c in non_numeric_cols if c != 'disposition']
     df = df.drop(columns=non_numeric_cols)
 
-    # Convert all columns to numeric, coerce errors and fill missing values with column mean
-    df = df.apply(pd.to_numeric, errors='coerce')
-    df = df.fillna(df.mean())
+    df = df.apply(pd.to_numeric, errors='coerce').fillna(df.mean())
 
-    # Separate features and labels
     labels = df['disposition'].astype(int).values
     features = df.drop(columns=['disposition']).values.astype(np.float32)
 
-    # Train/test split (changed to 90/10)
-    idx = np.arange(len(df))
+    feature_info = {
+        'orbital_period': (0.1638211, 129995.7784),
+        'transit_duration': (0.0, 138.54),
+        'transit_depth': (0.0, 1541400.0),
+        'planet_radius': (0.08, 200346.0),
+        'insolation_flux': (0.0, 10947554.55),
+        'equilibrium_temp': (25.0, 14667.0),
+        'stellar_teff': (2550.0, 50000.0),
+        'stellar_logg': (0.047, 5.96065),
+        'stellar_radius': (0.109, 229.908),
+        'semi_major_axis': (0.0013702438396151, 44.9892)
+    }
+    feature_names = list(feature_info.keys())
+
+    # synthetic examples of unrealistics
+    num_synthetic = int(0.025 * len(features))
+    synthetic_X = np.zeros((num_synthetic, features.shape[1]), dtype=float)
+    synthetic_y = np.zeros(num_synthetic, dtype=int)  # always False Positive
+
+    for i in range(num_synthetic):
+        num_extreme = np.random.randint(1, features.shape[1]+1)  # number of extreme columns
+        extreme_cols = np.random.choice(features.shape[1], num_extreme, replace=False)
+        for j in range(features.shape[1]):
+            min_val, max_val = feature_info[feature_names[j]]
+            if j in extreme_cols:
+                # make extreme (e.g., 10× to 100× max)
+                synthetic_X[i, j] = max_val * np.random.uniform(10, 100)
+            else:
+                # normal realistic value
+                synthetic_X[i, j] = np.random.uniform(min_val, max_val)
+
+    # Train/test split
+    idx = np.arange(len(features))
     np.random.shuffle(idx)
     split = int(0.9 * len(idx))
     train_idx, test_idx = idx[:split], idx[split:]
@@ -62,18 +87,15 @@ def load_dataset():
     X_train, y_train = features[train_idx], labels[train_idx]
     X_test, y_test = features[test_idx], labels[test_idx]
 
-    # Convert to tensors and create TensorDataset
     X_train_t = torch.tensor(X_train, dtype=torch.float32)
     y_train_t = torch.tensor(y_train, dtype=torch.long)
     X_test_t = torch.tensor(X_test, dtype=torch.float32)
     y_test_t = torch.tensor(y_test, dtype=torch.long)
 
-    from torch.utils.data import TensorDataset
     train_ds = TensorDataset(X_train_t, y_train_t)
     test_ds = TensorDataset(X_test_t, y_test_t)
-    
-    # show sizes for transparency
-    print(f"Total rows: {len(df)}, train: {len(train_ds)}, test: {len(test_ds)}")
+
+    print(f"Total rows: {len(features)}, train: {len(train_ds)}, test: {len(test_ds)}, synthetic: {num_synthetic}")
 
     return {
         "train": DataLoader(train_ds, batch_size=128, shuffle=True, num_workers=0),
@@ -82,6 +104,8 @@ def load_dataset():
         "train_size": len(train_ds),
         "test_size": len(test_ds),
     }
+
+
     
 def train(epoch = 0):
     model.train()
@@ -187,8 +211,7 @@ if __name__ == "__main__":
     loss_fn = nn.CrossEntropyLoss()
     # checkpointing setup
     checkpoint_dir = 'checkpoints'
-    best_acc = 0.0
-    save_every = 10
+    best_acc = 0.8 # default 80%
     
     # Track metrics over time
     metrics_history = {
@@ -227,10 +250,6 @@ if __name__ == "__main__":
             'f1_score': f1,
             'roc_auc': roc_auc,
         }
-
-        # save periodic checkpoint
-        if epoch % save_every == 0:
-            save_checkpoint(state, is_best=False, checkpoint_dir=checkpoint_dir, filename=f'checkpoint_epoch_{epoch}.pth')
 
         # save best model
         if acc > best_acc:

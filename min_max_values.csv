@@ -1,0 +1,12 @@
+category,min,max
+disposition,0.0,1.0
+orbital_period,0.1638211,129995.7784
+transit_duration,0.0,138.54
+transit_depth,0.0,1541400.0
+planet_radius,0.08,200346.0
+insolation_flux,0.0,10947554.55
+equilibrium_temp,25.0,14667.0
+stellar_teff,2550.0,50000.0
+stellar_logg,0.047,5.96065
+stellar_radius,0.109,229.908
+semi_major_axis,0.0013702438396151,44.9892

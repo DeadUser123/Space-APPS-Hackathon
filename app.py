@@ -26,7 +26,7 @@ CORS(app)
 class SimpleNN(nn.Module):
     def __init__(self, input_dim: int, p_dropout: float = 0.2):
         super(SimpleNN, self).__init__()
-        self.fc1 = nn.Linear(input_dim, 32)
+        self.fc1 = nn.Linear(input_dim, out_features=32)
         self.fc2 = nn.Linear(32, 16)
         self.dropout = nn.Dropout(p_dropout)
         self.fc3 = nn.Linear(16, 2)
@@ -128,7 +128,7 @@ def preprocess_input(data_dict):
     features = []
     for i, fname in enumerate(feature_names):
         val = data_dict.get(fname, 0.0)
-        val = max(FEATURE_MIN[i], min(FEATURE_MAX[i], val)) # prevent unrealistic values since model is terrible at extrapolation
+        # val = max(FEATURE_MIN[i], min(FEATURE_MAX[i], val))# prevent unrealistic values since model is terrible at extrapolation
         try:
             features.append(float(val))
         except (ValueError, TypeError):
