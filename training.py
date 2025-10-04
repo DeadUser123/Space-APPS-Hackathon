@@ -5,6 +5,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 import numpy as np
 import pandas as pd
+from sklearn.metrics import classification_report, f1_score
 
 DATASET_PATH = 'merged_exoplanets.csv'
 
@@ -127,8 +128,14 @@ def test():
 
     test_loss = test_loss / loaders_info['test_size']
     acc = correct / loaders_info['test_size'] if loaders_info['test_size'] > 0 else 0.0
+    f1_macro = f1_score(all_targets, all_preds, average="macro")
+    f1_micro = f1_score(all_targets, all_preds, average="micro")
+    f1_weighted = f1_score(all_targets, all_preds, average="weighted")
 
     print(f"\nTest set: Average loss: {test_loss:.4f}, Accuracy: {correct}/{loaders_info['test_size']} ({100. * acc:.2f}%)")
+    print(f"F1 (macro): {f1_macro:.4f}")
+    print(f"F1 (micro): {f1_micro:.4f}")
+    print(f"F1 (weighted): {f1_weighted:.4f}")
     return acc, test_loss
 
 if __name__ == "__main__":
