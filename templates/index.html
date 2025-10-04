@@ -56,113 +56,11 @@
     </header>
 
     <main>
-        <section class="section challenge-highlights">
-            <div class="container">
-                <div class="section-header">
-                    <h2>Ready for Use</h2>
-                    <p>Clear alignment with standard evaluation metrics for scientific software and ML models.</p>
-                </div>
-                <div class="judging-grid">
-                    <div class="judging-card">
-                        <h3>Impact</h3>
-                        <p>Automates manual triage with 92.08% recall so mission scientists can surface true exoplanets faster.</p>
-                        <ul>
-                            <li>Batch CSV upload for bulk analysis</li>
-                            <li>Confidence scores for every prediction</li>
-                            <li>Live charts communicating findings</li>
-                        </ul>
-                    </div>
-                    <div class="judging-card">
-                        <h3>Creativity</h3>
-                        <p>Combines NASA’s historical missions with ML explainability to spotlight orbital drivers.</p>
-                        <ul>
-                            <li>Feature influence visualization</li>
-                            <li>Interactive challenge briefing</li>
-                            <li>Mission-inspired UI language</li>
-                        </ul>
-                    </div>
-                    <div class="judging-card">
-                        <h3>Validity</h3>
-                        <p>PyTorch model validated on held-out data with ROC-AUC of 0.8572 and clarity on class balance.</p>
-                        <ul>
-                            <li>Confusion matrix + ROC curve</li>
-                            <li>Dataset composition analytics</li>
-                            <li>Prediction confidence heatmap</li>
-                        </ul>
-                    </div>
-                    <div class="judging-card">
-                        <h3>Relevance</h3>
-                        <p>Purpose-built for “A World Away: Hunting for Exoplanets with AI” using NASA open data.</p>
-                        <ul>
-                            <li>Kepler, K2, TESS integration</li>
-                            <li>Transit method feature set</li>
-                            <li>Mission briefing & resource links</li>
-                        </ul>
-                    </div>
-                    <div class="judging-card">
-                        <h3>Presentation</h3>
-                        <p>Professional black, white, and blue interface with clear calls-to-action and evidence panels.</p>
-                        <ul>
-                            <li>Responsive hero + stat counters</li>
-                            <li>Single & batch prediction demos</li>
-                            <li>Downloadable results for judges</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section feature-showcase">
-            <div class="container">
-                <div class="section-header">
-                    <h2>Mission Capabilities</h2>
-                    <p>All functionality is live in this build for judges to explore.</p>
-                </div>
-                <div class="feature-grid">
-                    <div class="feature-card">
-                        <h3>Real-Time Screening</h3>
-                        <p>Enter orbital parameters and instantly receive classification with probabilities and rationale.</p>
-                        <span class="feature-tag">Single Prediction</span>
-                    </div>
-                    <div class="feature-card">
-                        <h3>Bulk Candidate Review</h3>
-                        <p>Upload CSVs from the NASA Exoplanet Archive, triage results, and export annotated outcomes.</p>
-                        <span class="feature-tag">Batch Upload</span>
-                    </div>
-                    <div class="feature-card">
-                        <h3>Explainable Insights</h3>
-                        <p>Matplotlib-powered dashboards show feature influence, class balance, and confidence spread.</p>
-                        <span class="feature-tag">Visualization Suite</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section callout">
-            <div class="container callout-content">
-                <div>
-                    <h2>Judges: Try the Workflow</h2>
-                    <p>Walk through a full discovery cycle: inspect mission metrics, submit new orbital data, and download review-ready reports.</p>
-                </div>
-                <div class="callout-actions">
-                    <a class="btn btn-primary" href="/predict">Start With Example Data</a>
-                    <a class="btn btn-secondary" href="/metrics">View the model metrics</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container footer-content">
-            <div>
-                <p>Powered by PyTorch, Flask, Matplotlib, and NASA Exoplanet Archive datasets.</p>
-            </div>
-            <div class="footer-links">
-                <a href="https://exoplanetarchive.ipac.caltech.edu/" target="_blank" rel="noopener">NASA Exoplanet Archive</a>
-                <a href="https://www.spaceappschallenge.org/" target="_blank" rel="noopener">Space Apps Resources</a>
-            </div>
+        <div class="container">
+            <h2>Welcome to GQ Planets</h2>
+            <p>Your one-stop solution for exoplanet detection and analysis.</p>
         </div>
-    </footer>
+    </main>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
