@@ -536,7 +536,8 @@ ul {
 /* File Upload */
 .file-upload {
     position: relative;
-    margin-bottom: 1.5rem;
+    margin-bottom: 4rem; /* more space under the file upload area */
+    margin-top: 4rem;  /* nudge the whole box down slightly */
 }
 
 .file-upload input[type="file"] {
@@ -549,11 +550,16 @@ ul {
 .file-label {
     border: 2px dashed var(--light-gray);
     border-radius: 6px;
-    padding: 2.5rem;
+    padding: 2.8rem 2.5rem; /* slightly larger hit area */
     text-align: center;
     color: var(--medium-gray);
     font-weight: 600;
     transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Push the large primary button in upload-section further down for clearer separation */
+.upload-section .btn-large {
+    margin-top: 1rem;
 }
 
 .file-label:hover {
