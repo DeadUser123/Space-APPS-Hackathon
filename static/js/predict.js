@@ -144,9 +144,27 @@ function getInterpretation(result) {
 const fileInput = document.getElementById('csv-file');
 if (fileInput) {
     fileInput.addEventListener('change', (e) => {
-        const fileName = e.target.files[0]?.name || 'Choose CSV file...';
-        document.getElementById('file-name').textContent = fileName;
+        const file = e.target.files[0];
+        const baseLabel = document.getElementById('file-name');
+        const selName = document.getElementById('selected-file-name');
+        const label = document.getElementById('file-label');
+        if (file) {
+            baseLabel.textContent = 'File selected';
+            selName.textContent = file.name;
+            selName.style.display = 'block';
+            label.classList.add('has-file');
+        } else {
+            baseLabel.textContent = 'Click or drag a CSV file here';
+            selName.textContent = '';
+            selName.style.display = 'none';
+            label.classList.remove('has-file');
+        }
     });
+}
+
+// Utility: build URL (supports being served behind a path on Render)
+function apiUrl(path) {
+    return path; // adjust here if a prefix is needed later
 }
 
 // Batch prediction form handler
@@ -168,13 +186,18 @@ document.getElementById('batch-form').addEventListener('submit', async (e) => {
         submitBtn.textContent = 'Processing...';
         submitBtn.disabled = true;
         
-        const response = await fetch('/api/predict_batch', {
+        const response = await fetch(apiUrl('/api/predict_batch'), {
             method: 'POST',
             body: formData
         });
         
         if (!response.ok) {
-            throw new Error('Batch prediction failed');
+            let msg = 'Batch prediction failed';
+            try {
+                const errData = await response.json();
+                if (errData.error) msg = errData.error;
+            } catch {}
+            throw new Error(msg);
         }
         
         const result = await response.json();
@@ -186,7 +209,13 @@ document.getElementById('batch-form').addEventListener('submit', async (e) => {
         submitBtn.disabled = false;
         
     } catch (error) {
-        alert('Error processing file: ' + error.message);
+        const status = document.getElementById('batch-status');
+        if (status) {
+            status.style.color = 'var(--danger-color)';
+            status.textContent = error.message;
+        } else {
+            alert('Error processing file: ' + error.message);
+        }
         submitBtn.textContent = 'Process File';
         submitBtn.disabled = false;
     }
@@ -205,21 +234,21 @@ function displayBatchResults(result) {
     
     // Display stats
     statsDiv.innerHTML = `
-        <div class="stat-card">
-            <h3>${result.total}</h3>
+        <div class="batch-stat-card">
             <p>Total Candidates</p>
+            <h3>${result.total}</h3>
         </div>
-        <div class="stat-card">
-            <h3 style="color: var(--success-color)">${exoplanets}</h3>
+        <div class="batch-stat-card">
             <p>Predicted Exoplanets</p>
+            <h3 style="color: var(--success-color)">${exoplanets}</h3>
         </div>
-        <div class="stat-card">
-            <h3 style="color: var(--danger-color)">${falsePositives}</h3>
+        <div class="batch-stat-card">
             <p>False Positives</p>
+            <h3 style="color: var(--danger-color)">${falsePositives}</h3>
         </div>
-        <div class="stat-card">
-            <h3>${avgConfidence}%</h3>
+        <div class="batch-stat-card">
             <p>Avg Confidence</p>
+            <h3>${avgConfidence}%</h3>
         </div>
     `;
     
@@ -266,4 +295,63 @@ function downloadResults() {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+}
+
+// Drag & drop support
+const dropZone = document.getElementById('file-drop-zone');
+const fileLabel = document.getElementById('file-label');
+if (dropZone && fileLabel) {
+    ;['dragenter','dragover'].forEach(evt => dropZone.addEventListener(evt, (e)=>{
+        e.preventDefault(); e.stopPropagation(); fileLabel.classList.add('dragover');
+    }));
+    ;['dragleave','drop'].forEach(evt => dropZone.addEventListener(evt, (e)=>{
+        e.preventDefault(); e.stopPropagation(); fileLabel.classList.remove('dragover');
+    }));
+    dropZone.addEventListener('drop', (e)=>{
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            const f = e.dataTransfer.files[0];
+            if (!f.name.endsWith('.csv')) { alert('Please drop a .csv file'); return; }
+            document.getElementById('csv-file').files = e.dataTransfer.files;
+            document.getElementById('file-name').textContent = 'File selected';
+            const selName = document.getElementById('selected-file-name');
+            selName.textContent = f.name;
+            selName.style.display = 'block';
+            document.getElementById('file-label').classList.add('has-file');
+        }
+    });
+}
+
+// Sample CSV download
+const sampleBtn = document.getElementById('download-sample');
+if (sampleBtn) {
+    sampleBtn.addEventListener('click', () => {
+        const header = 'orbital_period,transit_duration,transit_depth,planet_radius,semi_major_axis,insolation_flux,equilibrium_temp,stellar_teff,stellar_radius,stellar_logg\n';
+        const sampleRows = [
+            '3.52,2.5,1200,1.2,0.045,350,1450,5800,1.1,4.4',
+            '12.7,5.1,800,2.4,0.09,290,900,5600,0.95,4.3'
+        ];
+        const blob = new Blob([header + sampleRows.join('\n')], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'sample_exoplanet_batch.csv';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+}
+
+// Reset batch results
+const resetBtn = document.getElementById('reset-batch');
+if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+        document.getElementById('batch-results').style.display = 'none';
+        document.getElementById('batch-table-body').innerHTML = '';
+        batchResults = null;
+        document.getElementById('batch-status').textContent = '';
+        document.getElementById('csv-file').value = '';
+        document.getElementById('file-name').textContent = 'Click or drag a CSV file here';
+        const sel = document.getElementById('selected-file-name');
+        sel.textContent=''; sel.style.display='none';
+        document.getElementById('file-label').classList.remove('has-file');
+        window.scrollTo({ top: document.getElementById('batch-tab').offsetTop, behavior: 'smooth'});
+    });
 }

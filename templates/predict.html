@@ -106,20 +106,26 @@
         <!-- Batch Upload Tab -->
         <div id="batch-tab" class="tab-content">
             <div class="upload-section">
-                <h3>Upload CSV File for Batch Predictions</h3>
-                <p>Upload a CSV file containing exoplanet candidates. The file should include the following columns:</p>
+                <h3>Batch Prediction Upload</h3>
+                <p style="color: var(--medium-gray); max-width: 760px; line-height:1.5;">Upload a CSV of candidate signals. We run each row through the model and return predicted classification with probabilities. Column order may vary, but headers must exactly match the required feature names.</p>
                 <div class="csv-info">
-                    <code>orbital_period, transit_duration, transit_depth, planet_radius, semi_major_axis, 
-insolation_flux, equilibrium_temp, stellar_teff, stellar_radius, stellar_logg</code>
+                    <code>orbital_period, transit_duration, transit_depth, planet_radius, semi_major_axis, insolation_flux, equilibrium_temp, stellar_teff, stellar_radius, stellar_logg</code>
                 </div>
-                <form id="batch-form" enctype="multipart/form-data">
-                    <div class="file-upload">
+                <form id="batch-form" enctype="multipart/form-data" class="batch-form">
+                    <div class="file-upload" id="file-drop-zone">
                         <input type="file" id="csv-file" name="file" accept=".csv" required>
-                        <label for="csv-file" class="file-label">
-                            <span id="file-name">Choose CSV file...</span>
+                        <label for="csv-file" class="file-label" id="file-label">
+                            <span class="file-label-icon">📄</span>
+                            <span id="file-name">Click or drag a CSV file here</span>
+                            <span id="selected-file-name" class="file-selected-name" style="display:none;"></span>
+                            <div style="margin-top:0.35rem; font-size:0.75rem; font-weight:500; color:var(--medium-gray); letter-spacing:0.03em;">Max 16MB • UTF-8 CSV • 10 columns required</div>
                         </label>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-large">Process File</button>
+                    <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center;">
+                        <button type="submit" class="btn btn-primary btn-large">Process File</button>
+                        <button type="button" class="btn btn-secondary" id="download-sample">Download Sample CSV</button>
+                        <div class="inline-status" id="batch-status" aria-live="polite"></div>
+                    </div>
                 </form>
             </div>
 
@@ -142,7 +148,10 @@ insolation_flux, equilibrium_temp, stellar_teff, stellar_radius, stellar_logg</c
                         </tbody>
                     </table>
                 </div>
-                <button class="btn btn-secondary" onclick="downloadResults()">Download Results</button>
+                <div style="margin-top:1.25rem; display:flex; flex-wrap:wrap; gap:1rem;">
+                    <button class="btn btn-secondary" onclick="downloadResults()">Download Results</button>
+                    <button class="btn btn-secondary" type="button" id="reset-batch">New Upload</button>
+                </div>
             </div>
         </div>
     </div>

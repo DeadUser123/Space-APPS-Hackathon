@@ -522,10 +522,34 @@ def api_predict_batch():
         file = request.files['file']
         if file.filename == '':
             return jsonify({'error': 'No file selected'}), 400
-        
-        # Read CSV
-        df = pd.read_csv(file)
-        
+        # Basic size guard (Render free tier constraints) - rely on MAX_CONTENT_LENGTH for hard limit
+        file.seek(0, os.SEEK_END)
+        size = file.tell()
+        file.seek(0)
+        if size > 16 * 1024 * 1024:  # 16MB
+            return jsonify({'error': 'File too large (max 16MB).'}), 400
+
+        try:
+            df = pd.read_csv(file)
+        except Exception as read_err:
+            return jsonify({'error': f'Failed to parse CSV: {read_err}'}), 400
+
+        if df.empty:
+            return jsonify({'error': 'CSV file is empty.'}), 400
+
+        required_cols = set(feature_names)
+        missing = required_cols - set(df.columns)
+        if missing:
+            return jsonify({'error': f'Missing required columns: {", ".join(sorted(missing))}'}), 400
+
+        # Limit rows to protect server memory/time on Render
+        max_rows = int(os.environ.get('BATCH_MAX_ROWS', 5000))
+        if len(df) > max_rows:
+            df = df.head(max_rows)
+            truncated = True
+        else:
+            truncated = False
+
         results = []
         for idx, row in df.iterrows():
             data_dict = row.to_dict()
@@ -533,12 +557,15 @@ def api_predict_batch():
             prediction = predict_single(features)
             prediction['row'] = idx
             results.append(prediction)
-        
-        return jsonify({
+
+        payload = {
             'predictions': results,
             'total': len(results),
-            'timestamp': datetime.now().isoformat()
-        })
+            'timestamp': datetime.now().isoformat(),
+        }
+        if truncated:
+            payload['note'] = f'Results truncated to first {max_rows} rows.'
+        return jsonify(payload)
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 

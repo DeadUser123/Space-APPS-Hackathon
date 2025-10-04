@@ -16,6 +16,9 @@
     --white: #ffffff;
     --success: #10b981;
     --danger: #ef4444;
+    /* Aliases used in JS (previously missing causing fallback to black) */
+    --success-color: var(--success);
+    --danger-color: var(--danger);
 }
 
 body {
@@ -536,8 +539,7 @@ ul {
 /* File Upload */
 .file-upload {
     position: relative;
-    margin-bottom: 4rem; /* more space under the file upload area */
-    margin-top: 4rem;  /* nudge the whole box down slightly */
+    margin: 1.25rem 0 2rem;
 }
 
 .file-upload input[type="file"] {
@@ -549,17 +551,58 @@ ul {
 
 .file-label {
     border: 2px dashed var(--light-gray);
-    border-radius: 6px;
-    padding: 2.8rem 2.5rem; /* slightly larger hit area */
+    border-radius: 12px;
+    padding: 1rem 1rem;
     text-align: center;
     color: var(--medium-gray);
     font-weight: 600;
-    transition: border-color 0.2s ease, color 0.2s ease;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    background: var(--extra-light-gray);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 190px;
+    cursor: pointer;
+    position: relative;
+}
+
+.file-label.dragover {
+    border-color: var(--primary-blue);
+    background: rgba(37,99,235,0.08);
+    color: var(--primary-blue);
+}
+
+.file-label:focus-within {
+    outline: 3px solid rgba(37,99,235,0.4);
+    outline-offset: 2px;
+    border-color: var(--primary-blue);
+}
+
+.file-label.has-file {
+    border-style: solid;
+    border-color: var(--primary-blue);
+    background: #ffffff;
+    color: var(--black);
+}
+
+.file-label-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.file-selected-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--primary-blue);
+    word-break: break-word;
+    max-width: 100%;
 }
 
 /* Push the large primary button in upload-section further down for clearer separation */
 .upload-section .btn-large {
-    margin-top: 1rem;
+    margin-top: 0.25rem;
 }
 
 .file-label:hover {
@@ -637,6 +680,50 @@ ul {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
     margin-bottom: 1.5rem;
+}
+
+/* Refreshed batch stat cards */
+.batch-stats .stat-card, .batch-stat-card {
+    background: var(--extra-light-gray);
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: flex-start;
+}
+
+.batch-stat-card h3, .batch-stats .stat-card h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--black);
+}
+
+.batch-stat-card p, .batch-stats .stat-card p {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--medium-gray);
+    font-weight: 600;
+}
+
+.batch-results-section {
+    position: relative;
+}
+
+/* Inline error / status badge */
+.inline-status {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--medium-gray);
+}
+
+/* Improve table spacing on narrow screens */
+@media (max-width: 640px) {
+    .results-table th, .results-table td { padding: 0.6rem 0.5rem; font-size: 0.78rem; }
+    .file-label { padding: 1.8rem 1rem; }
 }
 
 .results-table {
