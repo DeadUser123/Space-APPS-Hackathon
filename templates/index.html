@@ -54,6 +54,233 @@
             </div>
         </div>
     </header>
+
+    <!-- Technical Documentation Section -->
+    <section class="documentation-section">
+        <div class="container">
+            <h2 class="section-title">Technical Documentation</h2>
+            
+            <!-- ML Model Training -->
+            <div class="doc-block">
+                <h3 class="doc-heading">Machine Learning Model Training</h3>
+                <p class="doc-text">The GQ Planets neural network was developed to rapidly classify transit signals from space telescope data. The model achieves <strong>83% accuracy</strong> and demonstrates <strong>strong performance</strong> across multiple evaluation metrics.</p>
+                
+                <h4 class="doc-subheading">Data Collection and Integration</h4>
+                <p class="doc-text">The training data combines three major NASA exoplanet archives:</p>
+                <ul class="doc-list">
+                    <li><strong>Kepler Space Telescope (KOI):</strong> Primary source of confirmed exoplanets and candidate observations</li>
+                    <li><strong>K2 Mission:</strong> Extended mission data providing additional diversity in stellar populations</li>
+                    <li><strong>TESS (TOI):</strong> Recent all-sky survey data expanding coverage to nearby bright stars</li>
+                </ul>
+                
+                <h4 class="doc-subheading">Feature Engineering</h4>
+                <p class="doc-text">The model processes <strong>10 carefully selected astronomical features</strong>:</p>
+                <ul class="doc-list">
+                    <li><strong>Orbital Period</strong> (days) - Time for planet to complete one orbit</li>
+                    <li><strong>Transit Duration</strong> (hours) - Length of time the planet blocks starlight</li>
+                    <li><strong>Transit Depth</strong> (ppm) - Magnitude of brightness decrease</li>
+                    <li><strong>Planet Radius</strong> (Earth radii) - Size relative to Earth</li>
+                    <li><strong>Semi-Major Axis</strong> (AU) - Average orbital distance</li>
+                    <li><strong>Insolation Flux</strong> (Earth flux) - Stellar radiation received</li>
+                    <li><strong>Equilibrium Temperature</strong> (K) - Estimated planetary temperature</li>
+                    <li><strong>Stellar Effective Temperature</strong> (K) - Host star surface temperature</li>
+                    <li><strong>Stellar Radius</strong> (Solar radii) - Star size relative to our Sun</li>
+                    <li><strong>Stellar Surface Gravity</strong> (log g) - Gravitational acceleration</li>
+                </ul>
+            </div>
+
+            <!-- Neural Network Architecture -->
+            <div class="doc-block">
+                <h3 class="doc-heading">Neural Network Architecture</h3>
+                <p class="doc-text">The neural network is a <strong>feedforward binary classifier</strong> built upon four distinct layer types:</p>
+                
+                <div class="architecture-grid">
+                    <div class="arch-card">
+                        <h5>Input Layer</h5>
+                        <p>Accepts 10 normalized astronomical features</p>
+                    </div>
+                    <div class="arch-card">
+                        <h5>Hidden Layers</h5>
+                        <p>Two layers with 32 and 16 neurons using ReLU activation</p>
+                    </div>
+                    <div class="arch-card">
+                        <h5>Dropout Layer</h5>
+                        <p>20% deactivation rate to prevent overfitting</p>
+                    </div>
+                    <div class="arch-card">
+                        <h5>Output Layer</h5>
+                        <p>Sigmoid activation producing probability scores</p>
+                    </div>
+                </div>
+                
+                <p class="doc-text">The model optimizes using <strong>binary cross-entropy loss</strong> with the <strong>Adam optimizer</strong> (learning rate 0.001).</p>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="doc-block">
+                <h3 class="doc-heading">Performance Metrics</h3>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value">83.0%</div>
+                        <div class="metric-label">Accuracy</div>
+                        <p>Correctly classifies 83 out of every 100 observations</p>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">84.1%</div>
+                        <div class="metric-label">Precision</div>
+                        <p>When predicting an exoplanet, correct 84% of the time</p>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">92.1%</div>
+                        <div class="metric-label">Recall</div>
+                        <p>Successfully identifies 92% of all genuine exoplanets</p>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">87.9%</div>
+                        <div class="metric-label">F1-Score</div>
+                        <p>Balanced metric showing strong performance</p>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">0.88</div>
+                        <div class="metric-label">ROC-AUC</div>
+                        <p>Excellent discrimination between classes</p>
+                    </div>
+                </div>
+
+                <!-- Visual Performance Metrics -->
+                <div class="doc-images">
+                    <div class="doc-image-item">
+                        <img src="{{ url_for('static', filename='images/image3.png') }}" alt="Dataset Distribution">
+                        <p class="image-caption"><em>Figure 1: Distribution of confirmed exoplanets vs false positives in the training dataset</em></p>
+                    </div>
+                    <div class="doc-image-item">
+                        <img src="{{ url_for('static', filename='images/image2.png') }}" alt="Training Performance Metrics">
+                        <p class="image-caption"><em>Figure 2: Comprehensive model performance metrics across training</em></p>
+                    </div>
+                    <div class="doc-image-item">
+                        <img src="{{ url_for('static', filename='images/image4.png') }}" alt="ROC Curve">
+                        <p class="image-caption"><em>Figure 3: ROC curve showing true positive vs false positive trade-off (AUC = 0.88)</em></p>
+                    </div>
+                    <div class="doc-image-item">
+                        <img src="{{ url_for('static', filename='images/image6.png') }}" alt="Confusion Matrix">
+                        <p class="image-caption"><em>Figure 4: Confusion matrix showing actual vs predicted classifications</em></p>
+                    </div>
+                    <div class="doc-image-item">
+                        <img src="{{ url_for('static', filename='images/image5.png') }}" alt="Feature Importance">
+                        <p class="image-caption"><em>Figure 5: Relative importance of input features in model predictions</em></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Methodology -->
+            <div class="doc-block">
+                <h3 class="doc-heading">Training Methodology</h3>
+                <p class="doc-text">The training process involved:</p>
+                <ul class="doc-list">
+                    <li><strong>Dataset Split:</strong> 90% training, 10% test set</li>
+                    <li><strong>Batch Size:</strong> 128 observations per gradient update</li>
+                    <li><strong>Total Epochs:</strong> 1000 training iterations</li>
+                    <li><strong>Best Checkpoint:</strong> Epoch 972 selected for deployment</li>
+                    <li><strong>Synthetic Augmentation:</strong> 10% of training data includes extreme-value examples to improve robustness</li>
+                </ul>
+            </div>
+
+            <!-- Web Interface Architecture -->
+            <div class="doc-block">
+                <h3 class="doc-heading">Web Interface Architecture</h3>
+                <p class="doc-text">The system transforms what traditionally requires <strong>hours of manual analysis into seconds</strong> of automated processing.</p>
+                
+                <h4 class="doc-subheading">Technology Stack</h4>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <strong>Backend:</strong> Flask 2.x with CORS support
+                    </div>
+                    <div class="tech-item">
+                        <strong>ML Framework:</strong> PyTorch with custom neural network
+                    </div>
+                    <div class="tech-item">
+                        <strong>Data Processing:</strong> Pandas, NumPy
+                    </div>
+                    <div class="tech-item">
+                        <strong>Visualization:</strong> Matplotlib, Seaborn
+                    </div>
+                    <div class="tech-item">
+                        <strong>Frontend:</strong> HTML5, CSS3, JavaScript (ES6+)
+                    </div>
+                    <div class="tech-item">
+                        <strong>Deployment:</strong> Render.com with WSGI server
+                    </div>
+                </div>
+
+                <h4 class="doc-subheading">API Endpoints</h4>
+                <ul class="doc-list">
+                    <li><code>/api/predict</code> - Single prediction with JSON payload</li>
+                    <li><code>/api/predict_batch</code> - Batch processing for CSV uploads (up to 5000 rows)</li>
+                    <li><code>/api/model_info</code> - Model metadata and training metrics</li>
+                    <li><code>/api/visualizations</code> - Dynamic chart generation</li>
+                </ul>
+            </div>
+
+            <!-- Data Processing Pipeline -->
+            <div class="doc-block">
+                <h3 class="doc-heading">Data Processing Pipeline</h3>
+                <div class="pipeline-steps">
+                    <div class="pipeline-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h5>Input Validation</h5>
+                            <p>Comprehensive validation ensures data quality with safe defaults for missing values</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h5>Normalization</h5>
+                            <p>All inputs normalized to standard units and ranges expected by the neural network</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h5>OOD Detection</h5>
+                            <p>Warns when parameters fall outside training data range</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h5>Temperature Scaling</h5>
+                            <p>Calibrated probability outputs for trustworthy predictions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Architecture Flowcharts -->
+            <div class="doc-block">
+                <h3 class="doc-heading">System Architecture</h3>
+                <div class="flowchart-grid">
+                    <div class="flowchart-item">
+                        <img src="{{ url_for('static', filename='images/image1.png') }}" alt="ML Model Training Flowchart">
+                        <p class="image-caption"><em>Figure 6: Complete machine learning pipeline from data collection to deployment</em></p>
+                    </div>
+                    <div class="flowchart-item">
+                        <img src="{{ url_for('static', filename='images/image8.png') }}" alt="Web Interface Architecture">
+                        <p class="image-caption"><em>Figure 7: Web interface architecture showing Flask backend and API endpoints</em></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conclusion -->
+            <div class="doc-block conclusion">
+                <h3 class="doc-heading">Impact & Applications</h3>
+                <p class="doc-text"><strong>The GQ Planets system accelerates exoplanet discovery</strong> by serving as a first-pass filter that reduces manual review burden while maintaining high sensitivity to genuine planetary signals. The <strong>92% recall rate</strong> ensures we rarely miss genuine planets, while <strong>84% precision</strong> keeps false positive rates acceptable for follow-up observation programs.</p>
+                
+                <p class="doc-text">By processing observations in seconds rather than hours, this automated screening system enables astronomers to focus their expertise on the most promising candidates, making it valuable for both <strong>discovery</strong> (maximizing detections) and <strong>resource allocation</strong> (minimizing wasted telescope time).</p>
+            </div>
+        </div>
+    </section>
+
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
