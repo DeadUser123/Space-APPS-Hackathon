@@ -59,24 +59,24 @@ def load_dataset():
         'stellar_radius': (0.109, 229.908),
         'semi_major_axis': (0.0013702438396151, 44.9892)
     }
-    feature_names = list(feature_info.keys())
+    # feature_names = list(feature_info.keys())
 
     # synthetic examples of unrealistics
-    num_synthetic = int(0.1 * len(features))
-    synthetic_X = np.zeros((num_synthetic, features.shape[1]), dtype=float)
-    synthetic_y = np.zeros(num_synthetic, dtype=int)  # always False Positive
+    # num_synthetic = int(0.1 * len(features))
+    # synthetic_X = np.zeros((num_synthetic, features.shape[1]), dtype=float)
+    # synthetic_y = np.zeros(num_synthetic, dtype=int)  # always False Positive
 
-    for i in range(num_synthetic):
-        num_extreme = np.random.randint(1, features.shape[1]+1)  # number of extreme columns
-        extreme_cols = np.random.choice(features.shape[1], num_extreme, replace=False)
-        for j in range(features.shape[1]):
-            min_val, max_val = feature_info[feature_names[j]]
-            if j in extreme_cols:
-                # make extreme (e.g., 10× to 100× max)
-                synthetic_X[i, j] = max_val * np.random.uniform(10, 100)
-            else:
-                # normal realistic value
-                synthetic_X[i, j] = np.random.uniform(min_val, max_val)
+    # for i in range(num_synthetic):
+    #     num_extreme = np.random.randint(1, features.shape[1]+1)  # number of extreme columns
+    #     extreme_cols = np.random.choice(features.shape[1], num_extreme, replace=False)
+    #     for j in range(features.shape[1]):
+    #         min_val, max_val = feature_info[feature_names[j]]
+    #         if j in extreme_cols:
+    #             # make extreme (e.g., 10× to 100× max)
+    #             synthetic_X[i, j] = max_val * np.random.uniform(10, 100)
+    #         else:
+    #             # normal realistic value
+    #             synthetic_X[i, j] = np.random.uniform(min_val, max_val)
 
     # Train/test split
     idx = np.arange(len(features))
@@ -95,7 +95,7 @@ def load_dataset():
     train_ds = TensorDataset(X_train_t, y_train_t)
     test_ds = TensorDataset(X_test_t, y_test_t)
 
-    print(f"Total rows: {len(features)}, train: {len(train_ds)}, test: {len(test_ds)}, synthetic: {num_synthetic}")
+    print(f"Total rows: {len(features)}, train: {len(train_ds)}, test: {len(test_ds)}")
 
     return {
         "train": DataLoader(train_ds, batch_size=128, shuffle=True, num_workers=0),

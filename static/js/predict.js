@@ -35,12 +35,67 @@ function loadExample() {
 document.getElementById('predict-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Collect form data
+    // Client-side validation: ensure values (when provided) are within allowed bounds
+    const bounds = {
+        orbital_period: [0.1638211, 129995.7784],
+        transit_duration: [0, 138.54],
+        transit_depth: [0, 1541400.0],
+        planet_radius: [0.08, 200346.0],
+        insolation_flux: [0, 10947554.55],
+        equilibrium_temp: [25, 14667.0],
+        stellar_teff: [2550.0, 50000.0],
+        stellar_logg: [0.047, 5.96065],
+        stellar_radius: [0.109, 229.908],
+        semi_major_axis: [0.0013702438396151, 44.9892]
+    };
+
     const formData = new FormData(e.target);
     const data = {};
+    const fieldErrors = [];
+
+    function setFieldError(name, message) {
+        const el = document.getElementById(`error-${name}`);
+        const input = document.getElementById(name);
+        if (el) el.textContent = message;
+        if (input) input.classList.add('input-error');
+    }
+
+    function clearFieldError(name) {
+        const el = document.getElementById(`error-${name}`);
+        const input = document.getElementById(name);
+        if (el) el.textContent = '';
+        if (input) input.classList.remove('input-error');
+    }
+
+    // Clear all previous field errors
+    Object.keys(bounds).forEach(k => clearFieldError(k));
+
+    // Validate and populate data; show inline messages instead of alert
     formData.forEach((value, key) => {
-        data[key] = parseFloat(value) || 0;
+        const raw = value;
+        const num = parseFloat(raw);
+        if (raw !== '' && !Number.isNaN(num) && bounds[key]) {
+            const [lo, hi] = bounds[key];
+            if (num < lo || num > hi) {
+                const msg = `${num} — allowed ${lo} to ${hi}`;
+                setFieldError(key, msg);
+                fieldErrors.push({ key, msg });
+            }
+        } else {
+            // clear any previous error for this field
+            clearFieldError(key);
+        }
+        data[key] = Number.isNaN(num) ? 0 : num;
     });
+
+    if (fieldErrors.length > 0) {
+        // focus first invalid field
+        const first = fieldErrors[0].key;
+        const input = document.getElementById(first);
+        if (input) input.focus();
+        // do not submit
+        return;
+    }
     
     try {
         // Show loading state

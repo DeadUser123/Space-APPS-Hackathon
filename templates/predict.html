@@ -40,51 +40,61 @@
                             <label for="orbital_period">Orbital Period (days)</label>
                             <input type="number" step="any" id="orbital_period" name="orbital_period" placeholder="e.g., 3.52" required>
                             <small>Time for planet to complete one orbit</small>
+                            <div class="field-error" id="error-orbital_period" aria-live="polite"></div>
                         </div>
                         <div class="form-group">
                             <label for="transit_duration">Transit Duration (hours)</label>
                             <input type="number" step="any" id="transit_duration" name="transit_duration" placeholder="e.g., 2.5">
                             <small>Duration of transit across star</small>
+                            <div class="field-error" id="error-transit_duration" aria-live="polite"></div>
                         </div>
                         <div class="form-group">
                             <label for="transit_depth">Transit Depth (ppm)</label>
                             <input type="number" step="any" id="transit_depth" name="transit_depth" placeholder="e.g., 1200">
                             <small>Decrease in star brightness</small>
+                            <div class="field-error" id="error-transit_depth" aria-live="polite"></div>
                         </div>
                         <div class="form-group">
                             <label for="planet_radius">Planet Radius (Earth radii)</label>
                             <input type="number" step="any" id="planet_radius" name="planet_radius" placeholder="e.g., 1.2" required>
                             <small>Planet size relative to Earth</small>
+                            <div class="field-error" id="error-planet_radius" aria-live="polite"></div>
                         </div>
                         <div class="form-group">
                             <label for="semi_major_axis">Semi-Major Axis (AU)</label>
                             <input type="number" step="any" id="semi_major_axis" name="semi_major_axis" placeholder="e.g., 0.05">
                             <small>Average distance from star</small>
+                            <div class="field-error" id="error-semi_major_axis" aria-live="polite"></div>
                         </div>
                         <div class="form-group">
                             <label for="insolation_flux">Insolation Flux (Earth flux)</label>
                             <input type="number" step="any" id="insolation_flux" name="insolation_flux" placeholder="e.g., 300">
                             <small>Stellar radiation received</small>
+                            <div class="field-error" id="error-insolation_flux" aria-live="polite"></div>
                         </div>
                         <div class="form-group">
                             <label for="equilibrium_temp">Equilibrium Temperature (K)</label>
                             <input type="number" step="any" id="equilibrium_temp" name="equilibrium_temp" placeholder="e.g., 1500">
                             <small>Estimated planet temperature</small>
+                            <div class="field-error" id="error-equilibrium_temp" aria-live="polite"></div>
                         </div>
                         <div class="form-group">
                             <label for="stellar_teff">Stellar Temperature (K)</label>
                             <input type="number" step="any" id="stellar_teff" name="stellar_teff" placeholder="e.g., 5778" required>
                             <small>Host star surface temperature</small>
+                            <div class="field-error" id="error-stellar_teff" aria-live="polite"></div>
                         </div>
                         <div class="form-group">
                             <label for="stellar_radius">Stellar Radius (Solar radii)</label>
                             <input type="number" step="any" id="stellar_radius" name="stellar_radius" placeholder="e.g., 1.0">
                             <small>Star size relative to Sun</small>
+                            <div class="field-error" id="error-stellar_radius" aria-live="polite"></div>
                         </div>
                         <div class="form-group">
                             <label for="stellar_logg">Stellar log(g)</label>
                             <input type="number" step="any" id="stellar_logg" name="stellar_logg" placeholder="e.g., 4.5">
                             <small>Stellar surface gravity</small>
+                            <div class="field-error" id="error-stellar_logg" aria-live="polite"></div>
                         </div>
                     </div>
                     <div class="form-actions">

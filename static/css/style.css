@@ -529,6 +529,19 @@ ul {
     font-size: 0.8rem;
 }
 
+/* Inline validation styles */
+.field-error {
+    color: var(--danger);
+    font-size: 0.85rem;
+    margin-top: 0.35rem;
+    min-height: 1.1em; /* reserve space */
+}
+
+.input-error {
+    border-color: var(--danger) !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08);
+}
+
 .form-actions {
     display: flex;
     justify-content: center;
