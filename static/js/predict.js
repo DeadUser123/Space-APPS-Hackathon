@@ -118,6 +118,9 @@ function displayResults(result) {
     
     resultsDiv.style.display = 'block';
     resultsDiv.scrollIntoView({ behavior: 'smooth' });
+
+    // Add feedback UI
+    addFeedbackControls(result);
 }
 
 function getInterpretation(result) {
@@ -138,6 +141,105 @@ function getInterpretation(result) {
             return 'Moderate confidence false positive. Additional analysis may be needed.';
         }
     }
+}
+
+// Feedback controls: allow user to tell the model whether prediction was correct
+function addFeedbackControls(result) {
+    const resultContent = document.getElementById('result-content');
+    // Remove existing feedback section if present
+    const existing = document.getElementById('feedback-controls');
+    if (existing) existing.remove();
+
+    const feedbackDiv = document.createElement('div');
+    feedbackDiv.id = 'feedback-controls';
+    feedbackDiv.style.marginTop = '1rem';
+    feedbackDiv.innerHTML = `
+        <div style="display:flex; gap:0.75rem; align-items:center;">
+            <button id="fb-exo" class="btn btn-success">This is an Exoplanet</button>
+            <button id="fb-not" class="btn btn-danger">This is NOT an Exoplanet</button>
+            <div id="fb-status" style="margin-left:1rem; color:var(--medium-gray);"></div>
+        </div>
+    `;
+    resultContent.appendChild(feedbackDiv);
+
+    document.getElementById('fb-exo').addEventListener('click', () => submitFeedback(result, 1));
+    document.getElementById('fb-not').addEventListener('click', () => submitFeedback(result, 0));
+}
+
+async function submitFeedback(result, label) {
+    // show confirmation
+    const confirmMsg = label === 1 ?
+        'Mark this candidate as a confirmed exoplanet? This will send feedback to the app and perform a tiny update to the model.' :
+        'Mark this candidate as NOT an exoplanet? This will send feedback to the app and perform a tiny update.';
+
+    const confirmed = await showFeedbackModal(confirmMsg);
+    if (!confirmed) return;
+
+    const fbStatus = document.getElementById('fb-status');
+    fbStatus.style.color = 'var(--medium-gray)';
+    fbStatus.textContent = 'Sending feedback...';
+
+    // Reconstruct current feature values from form fields
+    const features = {};
+    const inputs = document.querySelectorAll('#predict-form input');
+    inputs.forEach(inp => {
+        const val = parseFloat(inp.value);
+        features[inp.name] = isNaN(val) ? 0.0 : val;
+    });
+
+    try {
+        const resp = await fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ features, label })
+        });
+        const data = await resp.json();
+        if (resp.ok && data.status === 'ok') {
+            fbStatus.style.color = 'var(--success-color)';
+            fbStatus.textContent = 'Thanks — feedback received.';
+            // fade out status after a short time
+            setTimeout(() => { if (fbStatus) fbStatus.textContent = ''; }, 4000);
+        } else {
+            const err = data.error || 'Unknown error';
+            fbStatus.style.color = 'var(--danger-color)';
+            fbStatus.textContent = 'Feedback failed: ' + err;
+        }
+    } catch (e) {
+        fbStatus.style.color = 'var(--danger-color)';
+        fbStatus.textContent = 'Feedback failed: ' + e.message;
+    }
+}
+
+// In-app modal helper: returns a Promise<boolean> resolved when user clicks Confirm/Cancel
+function showFeedbackModal(message) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('feedback-modal');
+        const msgEl = document.getElementById('feedback-modal-message');
+        const btnConfirm = document.getElementById('feedback-modal-confirm');
+        const btnCancel = document.getElementById('feedback-modal-cancel');
+
+        if (!modal || !msgEl || !btnConfirm || !btnCancel) {
+            // Fallback to native confirm if modal not present
+            resolve(confirm(message));
+            return;
+        }
+
+        msgEl.textContent = message;
+        modal.setAttribute('aria-hidden', 'false');
+
+        const cleanup = (value) => {
+            modal.setAttribute('aria-hidden', 'true');
+            btnConfirm.removeEventListener('click', onConfirm);
+            btnCancel.removeEventListener('click', onCancel);
+            resolve(value);
+        };
+
+        const onConfirm = () => cleanup(true);
+        const onCancel = () => cleanup(false);
+
+        btnConfirm.addEventListener('click', onConfirm);
+        btnCancel.addEventListener('click', onCancel);
+    });
 }
 
 // File upload handling
