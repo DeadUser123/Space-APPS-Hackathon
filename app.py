@@ -500,6 +500,11 @@ def metrics_page():
     """Metrics visualization page"""
     return render_template('metrics.html')
 
+@app.route('/learn')
+def learn_page():
+    """Learn about exoplanet detection"""
+    return render_template('learn.html')
+
 @app.route('/api/predict', methods=['POST'])
 def api_predict():
     """API endpoint for single prediction"""

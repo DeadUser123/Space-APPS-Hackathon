@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn About Exoplanets - GQ Planets</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>GQ Planets</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/predict">Predict</a></li>
+                <li><a href="/metrics">Metrics</a></li>
+                <li><a href="/learn" class="active">Learn</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="learn-hero">
+        <div class="container">
+            <h1 class="learn-hero-title">Understanding Exoplanet Detection</h1>
+            <p class="learn-hero-subtitle">Exploring the science, methods, and significance of discovering worlds beyond our solar system</p>
+        </div>
+    </header>
+
+    <!-- What Are Exoplanets -->
+    <section class="learn-section">
+        <div class="container">
+            <h2 class="learn-section-title">What Are Exoplanets?</h2>
+            
+            <div class="learn-content-grid">
+                <div class="learn-text-block">
+                    <p class="learn-intro-text">Exoplanets, or extrasolar planets, are planets that orbit stars outside our solar system. Since the first confirmed detection in 1992, astronomers have discovered over 5,000 exoplanets, fundamentally changing our understanding of planetary systems and the potential for life beyond Earth.</p>
+                    
+                    <h3 class="learn-subheading">Why Exoplanet Detection Matters</h3>
+                    <ul class="learn-list">
+                        <li><strong>Search for Habitable Worlds:</strong> Identifying planets in the habitable zone where liquid water could exist</li>
+                        <li><strong>Understanding Planetary Formation:</strong> Learning how planetary systems form and evolve</li>
+                        <li><strong>Atmospheric Analysis:</strong> Studying exoplanet atmospheres for biosignatures and chemical composition</li>
+                        <li><strong>Fundamental Science:</strong> Answering the profound question: "Are we alone in the universe?"</li>
+                    </ul>
+                    
+                    <div class="key-terms-box">
+                        <h4>Key Terms</h4>
+                        <dl class="terms-list">
+                            <dt>Transit</dt>
+                            <dd>When a planet passes in front of its host star, blocking a small fraction of starlight</dd>
+                            
+                            <dt>Habitable Zone</dt>
+                            <dd>The region around a star where temperatures allow liquid water to exist on a planet's surface</dd>
+                            
+                            <dt>Light Curve</dt>
+                            <dd>A graph showing how a star's brightness changes over time</dd>
+                            
+                            <dt>Semi-Major Axis</dt>
+                            <dd>The average distance between a planet and its host star (measured in AU - Astronomical Units)</dd>
+                            
+                            <dt>Insolation Flux</dt>
+                            <dd>The amount of stellar radiation received by a planet, compared to Earth's solar radiation</dd>
+                        </dl>
+                    </div>
+                </div>
+                
+                <div class="learn-visual-block">
+                    <div class="learn-image-card">
+                        <img src="https://science.nasa.gov/wp-content/uploads/2023/09/exoplanet-types-16x9-1.jpg" alt="Types of Exoplanets">
+                        <p class="learn-caption">Different types of exoplanets discovered, from rocky super-Earths to massive gas giants</p>
+                    </div>
+                    
+                    <div class="stats-highlight">
+                        <div class="stat-box">
+                            <div class="stat-number">5,599</div>
+                            <div class="stat-label">Confirmed Exoplanets</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">4,883</div>
+                            <div class="stat-label">Candidate Planets</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detection Methods -->
+    <section class="learn-section alternate-bg">
+        <div class="container">
+            <h2 class="learn-section-title">Exoplanet Detection Methods</h2>
+            
+            <div class="methods-grid">
+                <div class="method-card primary-method">
+                    <div class="method-badge">PRIMARY METHOD</div>
+                    <h3>Transit Photometry</h3>
+                    <p class="method-description">Measures the periodic dimming of a star's brightness as a planet passes in front of it. This is the most successful detection method used by Kepler, K2, and TESS missions.</p>
+                    
+                    <div class="method-details">
+                        <h4>What the Data Reveals:</h4>
+                        <ul>
+                            <li><strong>Transit Depth:</strong> Indicates planet size (larger planets block more light)</li>
+                            <li><strong>Transit Duration:</strong> Reveals orbital speed and distance from star</li>
+                            <li><strong>Orbital Period:</strong> Time between transits shows how long a "year" is on that planet</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="learn-image-card">
+                        <img src="https://science.nasa.gov/wp-content/uploads/2023/09/transiting-exoplanet-with-brightness-graph-16x9-1.jpg" alt="Transit Method Diagram">
+                        <p class="learn-caption">Transit method: A planet crossing in front of its star causes a measurable dip in brightness</p>
+                    </div>
+                </div>
+                
+                <div class="method-card">
+                    <h3>Radial Velocity</h3>
+                    <p class="method-description">Detects the wobble in a star's motion caused by a planet's gravitational pull. The star and planet orbit their common center of mass.</p>
+                    <ul class="method-advantages">
+                        <li>Can determine planet mass</li>
+                        <li>Effective for large planets close to their stars</li>
+                        <li>First method to confirm exoplanets</li>
+                    </ul>
+                </div>
+                
+                <div class="method-card">
+                    <h3>Direct Imaging</h3>
+                    <p class="method-description">Captures actual images of exoplanets by blocking the bright star's light. Most effective for large planets far from their stars.</p>
+                    <ul class="method-advantages">
+                        <li>Allows atmospheric study</li>
+                        <li>Can detect multiple planets simultaneously</li>
+                        <li>Provides visual confirmation</li>
+                    </ul>
+                </div>
+                
+                <div class="method-card">
+                    <h3>Gravitational Microlensing</h3>
+                    <p class="method-description">Uses Einstein's theory of relativity: a planet's gravity bends and magnifies light from a background star.</p>
+                    <ul class="method-advantages">
+                        <li>Can find planets far from Earth</li>
+                        <li>Detects low-mass planets</li>
+                        <li>One-time events, difficult to repeat</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How GQ Planets Works -->
+    <section class="learn-section">
+        <div class="container">
+            <h2 class="learn-section-title">How GQ Planets Accelerates Discovery</h2>
+            
+            <div class="workflow-explanation">
+                <p class="learn-intro-text">Traditional exoplanet confirmation requires hours of manual analysis per candidate. GQ Planets uses machine learning to automate initial screening, reducing analysis time from hours to seconds while maintaining high accuracy.</p>
+                
+                <div class="pipeline-visual">
+                    <div class="pipeline-stage">
+                        <div class="stage-number">1</div>
+                        <h4>Data Collection</h4>
+                        <p>Telescope observations from Kepler, K2, and TESS missions provide light curve measurements and stellar parameters</p>
+                    </div>
+                    
+                    <div class="pipeline-arrow">→</div>
+                    
+                    <div class="pipeline-stage">
+                        <div class="stage-number">2</div>
+                        <h4>Feature Extraction</h4>
+                        <p>System extracts 10 key astronomical features: orbital period, transit depth, planet radius, stellar properties, and more</p>
+                    </div>
+                    
+                    <div class="pipeline-arrow">→</div>
+                    
+                    <div class="pipeline-stage">
+                        <div class="stage-number">3</div>
+                        <h4>ML Classification</h4>
+                        <p>Neural network analyzes patterns learned from 18,413 observations to classify candidates as exoplanets or false positives</p>
+                    </div>
+                    
+                    <div class="pipeline-arrow">→</div>
+                    
+                    <div class="pipeline-stage">
+                        <div class="stage-number">4</div>
+                        <h4>Rapid Results</h4>
+                        <p>System outputs probability score and classification in seconds, prioritizing candidates for human review</p>
+                    </div>
+                </div>
+                
+                <div class="model-performance">
+                    <h3 class="learn-subheading">Our Model's Performance</h3>
+                    <div class="performance-grid">
+                        <div class="perf-item">
+                            <div class="perf-value">83%</div>
+                            <div class="perf-label">Overall Accuracy</div>
+                            <p>Correctly classifies 83 out of 100 observations</p>
+                        </div>
+                        <div class="perf-item">
+                            <div class="perf-value">92%</div>
+                            <div class="perf-label">Recall Rate</div>
+                            <p>Identifies 92% of genuine exoplanets (minimal false negatives)</p>
+                        </div>
+                        <div class="perf-item">
+                            <div class="perf-value">84%</div>
+                            <div class="perf-label">Precision</div>
+                            <p>When predicting an exoplanet, correct 84% of the time</p>
+                        </div>
+                    </div>
+                    
+                    <div class="performance-explanation">
+                        <p><strong>What This Means for Science:</strong> Our high recall rate (92%) ensures we rarely miss genuine planets, while strong precision (84%) minimizes wasted telescope time on false alarms. This balance makes the system valuable for both discovery and resource allocation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NASA Missions -->
+    <section class="learn-section alternate-bg">
+        <div class="container">
+            <h2 class="learn-section-title">NASA Missions Powering Our Data</h2>
+            
+            <div class="missions-grid">
+                <div class="mission-card">
+                    <h3>Kepler Space Telescope</h3>
+                    <div class="mission-years">2009 - 2018</div>
+                    <div class="learn-image-card">
+                        <img src="https://science.nasa.gov/wp-content/uploads/2023/09/kepler-16x9-1.jpg" alt="Kepler Space Telescope">
+                    </div>
+                    <p><strong>Mission:</strong> Surveyed 150,000 stars in a fixed region of sky to determine the frequency of Earth-sized planets in the habitable zone.</p>
+                    <div class="mission-stats">
+                        <div class="mission-stat">2,662 confirmed exoplanets</div>
+                        <div class="mission-stat">First Earth-sized planets in habitable zone</div>
+                    </div>
+                </div>
+                
+                <div class="mission-card">
+                    <h3>K2 Mission</h3>
+                    <div class="mission-years">2014 - 2018</div>
+                    <div class="learn-image-card">
+                        <img src="https://science.nasa.gov/wp-content/uploads/2023/09/stsci-01evvgys1z8yap2r58bxkxanaj-2000x1125-1.png" alt="K2 Mission">
+                    </div>
+                    <p><strong>Mission:</strong> Extended Kepler mission observing different regions of sky, expanding the diversity of stellar populations studied.</p>
+                    <div class="mission-stats">
+                        <div class="mission-stat">500+ confirmed exoplanets</div>
+                        <div class="mission-stat">Diverse stellar environments</div>
+                    </div>
+                </div>
+                
+                <div class="mission-card">
+                    <h3>TESS</h3>
+                    <div class="mission-years">2018 - Present</div>
+                    <div class="learn-image-card">
+                        <img src="https://science.nasa.gov/wp-content/uploads/2023/09/tess-spacecraft-16x9-1.jpg" alt="TESS Mission">
+                    </div>
+                    <p><strong>Mission:</strong> All-sky survey focusing on nearby bright stars, enabling detailed follow-up observations and atmospheric studies.</p>
+                    <div class="mission-stats">
+                        <div class="mission-stat">400+ confirmed exoplanets</div>
+                        <div class="mission-stat">Best targets for James Webb observations</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Famous Discoveries -->
+    <section class="learn-section">
+        <div class="container">
+            <h2 class="learn-section-title">Notable Exoplanet Discoveries</h2>
+            
+            <div class="discoveries-grid">
+                <div class="planet-card">
+                    <h4>Kepler-22b</h4>
+                    <div class="planet-type">Super-Earth</div>
+                    <div class="planet-info">
+                        <p><strong>Discovery:</strong> First planet in habitable zone around a Sun-like star</p>
+                        <p><strong>Size:</strong> 2.4 × Earth radius</p>
+                        <p><strong>Orbit:</strong> 290 days</p>
+                        <p><strong>Distance:</strong> 600 light-years</p>
+                    </div>
+                </div>
+                
+                <div class="planet-card">
+                    <h4>Kepler-186f</h4>
+                    <div class="planet-type">Earth-sized</div>
+                    <div class="planet-info">
+                        <p><strong>Discovery:</strong> First Earth-sized planet in habitable zone</p>
+                        <p><strong>Size:</strong> 1.1 × Earth radius</p>
+                        <p><strong>Orbit:</strong> 130 days</p>
+                        <p><strong>Distance:</strong> 500 light-years</p>
+                    </div>
+                </div>
+                
+                <div class="planet-card">
+                    <h4>TRAPPIST-1 System</h4>
+                    <div class="planet-type">Multi-planet System</div>
+                    <div class="planet-info">
+                        <p><strong>Discovery:</strong> Seven Earth-sized planets, three in habitable zone</p>
+                        <p><strong>Size:</strong> 0.76-1.13 × Earth radius</p>
+                        <p><strong>Orbit:</strong> 1.5-19 days</p>
+                        <p><strong>Distance:</strong> 40 light-years</p>
+                    </div>
+                </div>
+                
+                <div class="planet-card">
+                    <h4>TOI-700d</h4>
+                    <div class="planet-type">TESS Discovery</div>
+                    <div class="planet-info">
+                        <p><strong>Discovery:</strong> First Earth-sized habitable-zone planet found by TESS</p>
+                        <p><strong>Size:</strong> 1.1 × Earth radius</p>
+                        <p><strong>Orbit:</strong> 37 days</p>
+                        <p><strong>Distance:</strong> 100 light-years</p>
+                    </div>
+                </div>
+                
+                <div class="planet-card">
+                    <h4>Proxima Centauri b</h4>
+                    <div class="planet-type">Nearest Exoplanet</div>
+                    <div class="planet-info">
+                        <p><strong>Discovery:</strong> Closest known exoplanet to Earth</p>
+                        <p><strong>Size:</strong> ~1.3 × Earth mass</p>
+                        <p><strong>Orbit:</strong> 11 days</p>
+                        <p><strong>Distance:</strong> 4.2 light-years</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why It Matters -->
+    <section class="learn-section impact-section">
+        <div class="container">
+            <h2 class="learn-section-title">The Broader Impact</h2>
+            
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <h3>Scientific Discovery</h3>
+                    <p>Every exoplanet detection provides data about planetary formation, orbital dynamics, and stellar evolution. Understanding the diversity of planetary systems helps us understand our own solar system's place in the cosmos.</p>
+                </div>
+                
+                <div class="impact-card">
+                    <h3>Search for Life</h3>
+                    <p>Identifying potentially habitable planets is the first step toward detecting biosignatures. Future missions like James Webb Space Telescope can study atmospheres of promising candidates for signs of life.</p>
+                </div>
+                
+                <div class="impact-card">
+                    <h3>Future Missions</h3>
+                    <p>Our work supports upcoming missions:</p>
+                    <ul>
+                        <li><strong>James Webb Space Telescope:</strong> Atmospheric characterization</li>
+                        <li><strong>PLATO (ESA):</strong> Rocky planets in habitable zones</li>
+                        <li><strong>Roman Space Telescope:</strong> Wide-field survey capabilities</li>
+                    </ul>
+                </div>
+                
+                <div class="impact-card">
+                    <h3>Citizen Science</h3>
+                    <p>Projects like Planet Hunters and Exoplanet Explorers allow the public to contribute to discoveries. GQ Planets makes professional-grade analysis accessible, democratizing space science.</p>
+                </div>
+            </div>
+            
+            <div class="closing-statement">
+                <h3>Answering Humanity's Greatest Question</h3>
+                <p>The search for exoplanets addresses one of the most profound questions in human history: Are we alone in the universe? By accelerating the detection and classification of planetary candidates, GQ Planets contributes to this fundamental scientific pursuit, helping astronomers focus their efforts on the most promising worlds while advancing our understanding of planetary systems across the galaxy.</p>
+            </div>
+        </div>
+    </section>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
