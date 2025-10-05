@@ -3,11 +3,15 @@ from torch import nn
 import torch.nn.functional as F
 import numpy as np
 import pandas as pd
-from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix, roc_auc_score, classification_report
+from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix, roc_auc_score
 from torch.utils.data import DataLoader, TensorDataset
 import os
+import json
+from datetime import datetime
+import shutil
 
 DATASET_PATH = 'merged_exoplanets.csv'
+
 
 class SimpleNN(nn.Module):
     def __init__(self, input_dim: int, p_dropout: float = 0.2):
@@ -23,6 +27,7 @@ class SimpleNN(nn.Module):
         x = self.dropout(x)
         x = self.fc3(x)
         return x
+
 
 def load_dataset():
     seed = 42
@@ -60,6 +65,7 @@ def load_dataset():
         "test_size": len(test_ds),
     }
 
+
 def load_model_from_checkpoint(checkpoint_path: str, input_dim: int = None):
     if not os.path.exists(checkpoint_path):
         raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
@@ -84,6 +90,7 @@ def load_model_from_checkpoint(checkpoint_path: str, input_dim: int = None):
     model.eval()
     return model, metadata
 
+
 def evaluate_model(model, test_loader, test_size):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
@@ -93,8 +100,6 @@ def evaluate_model(model, test_loader, test_size):
     all_targets = []
     all_probs = []
     
-    correct = 0
-
     with torch.no_grad():
         for data, target in test_loader:
             data, target = data.to(device), target.to(device)
@@ -108,19 +113,15 @@ def evaluate_model(model, test_loader, test_size):
             all_preds.extend(pred.cpu().numpy().flatten().tolist())
             all_targets.extend(target.cpu().numpy().flatten().tolist())
 
-            # Count correct predictions
-            correct += (pred.cpu() == target.cpu().long()).sum().item()
-
     correct = sum([1 for p, t in zip(all_preds, all_targets) if p == t])
     acc = correct / test_size if test_size > 0 else 0.0
 
     precision = precision_score(all_targets, all_preds, zero_division=0)
     recall = recall_score(all_targets, all_preds, zero_division=0)
     f1 = f1_score(all_targets, all_preds, zero_division=0)
-    
     try:
         roc_auc = roc_auc_score(all_targets, all_probs)
-    except:
+    except Exception:
         roc_auc = 0.0
     
     cm = confusion_matrix(all_targets, all_preds)
@@ -135,6 +136,7 @@ def evaluate_model(model, test_loader, test_size):
         'correct': correct,
         'total': test_size
     }
+
 
 if __name__ == '__main__':
     print("=" * 70)
@@ -198,7 +200,62 @@ if __name__ == '__main__':
         print(f"False Negatives:  {fn:7d} (Missed exoplanets)")
         print(f"Specificity:      {specificity:.4f} (True negative rate)")
         print("=" * 70)
-        
+
+        # Persist evaluation metrics into checkpoint metadata and metadata.json fallback (so website metrics automatically update)
+        try:
+            eval_meta = {
+                'eval_accuracy': float(results['accuracy']),
+                'eval_precision': float(results['precision']),
+                'eval_recall': float(results['recall']),
+                'eval_f1_score': float(results['f1_score']),
+                'eval_roc_auc': float(results['roc_auc']),
+                'eval_date_utc': datetime.utcnow().isoformat() + 'Z',
+                'eval_test_size': int(results.get('total', test_size))
+            }
+
+            plain_meta = {
+                'accuracy': float(results['accuracy']),
+                'precision': float(results['precision']),
+                'recall': float(results['recall']),
+                'f1_score': float(results['f1_score']),
+                'roc_auc': float(results['roc_auc'])
+            }
+
+            ckpt_dir = os.path.dirname(checkpoint_path) or '.'
+            os.makedirs(ckpt_dir, exist_ok=True)
+
+            if os.path.exists(checkpoint_path):
+                backup = checkpoint_path + f'.bak.{datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")}' # create backup
+                try:
+                    shutil.copy2(checkpoint_path, backup)
+                except Exception:
+                    backup = None
+
+                ckpt = torch.load(checkpoint_path, map_location='cpu')
+                if isinstance(ckpt, dict) and 'model_state_dict' in ckpt:
+                    # merge evaluation metrics into checkpoint dict (plain keys + prefixed keys)
+                    ckpt.update(plain_meta)
+                    ckpt.update(eval_meta)
+                    torch.save(ckpt, checkpoint_path)
+                    print(f"Saved evaluation metrics into checkpoint: {checkpoint_path}")
+                    if backup:
+                        print(f"Backup of original checkpoint saved to: {backup}")
+                else:
+                    # raw state_dict: write metadata.json next to checkpoint
+                    meta_path = os.path.join(ckpt_dir, 'metadata.json')
+                    merged = {**plain_meta, **eval_meta}
+                    with open(meta_path, 'w') as f:
+                        json.dump(merged, f, indent=2)
+                    print(f"Checkpoint is a raw state_dict; wrote metadata to {meta_path}")
+            else:
+                meta_path = os.path.join(ckpt_dir, 'metadata.json')
+                merged = {**plain_meta, **eval_meta}
+                with open(meta_path, 'w') as f:
+                    json.dump(merged, f, indent=2)
+                print(f"No checkpoint found; wrote metadata to {meta_path}")
+        except Exception as e:
+            print(f"Warning: failed to save metadata: {e}")
+
     except FileNotFoundError:
         print(f"❌ No checkpoint found at {checkpoint_path}")
         print("   Run training.py to create a model first.")
