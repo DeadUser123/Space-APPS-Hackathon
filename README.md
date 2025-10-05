@@ -105,7 +105,3 @@ flowchart TD
   class REQ1,PRE1,MODEL1,POST1,RESP1,FILE,PARSE,LOOP,AGG,RESP2 flow;
   class FEEDBACK feedback;
 ```
-  class START,DEPLOY server;
-  class PRED,BATCH,INFO,VIS endpoint;
-  class REQ1,PRE1,MODEL1,POST1,RESP1,FILE,PARSE,LOOP,AGG,RESP2 flow;
-```
