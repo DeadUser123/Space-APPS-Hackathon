@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import io
 import base64
-from datetime import datetime, UTC
+from datetime import datetime
 import os
 import json
 from functools import lru_cache
@@ -607,132 +607,6 @@ def api_visualizations():
         'dataset_distribution': generate_dataset_distribution_plot(),
         'confidence_distribution': generate_prediction_confidence_plot()
     })
-
-
-@app.route('/api/feedback', methods=['POST'])
-def api_feedback(): # the idea with this is if there's a lot of users who say, this doesn't recognize this, then it auto fine-tunes abit
-    """Receive user feedback (label) for a single prediction and perform a tiny fine-tune step.
-
-    Expected JSON body:
-      { features: { ...feature_name: value }, label: 0|1 }
-    """
-    try:
-        payload = request.json
-        if not payload:
-            return jsonify({'error': 'No JSON payload provided'}), 400
-
-        features_dict = payload.get('features')
-        label = payload.get('label')
-        if features_dict is None or label is None:
-            return jsonify({'error': 'Both "features" and "label" are required.'}), 400
-
-        # validate label
-        try:
-            label_int = int(label)
-            if label_int not in (0, 1):
-                raise ValueError()
-        except Exception:
-            return jsonify({'error': 'Label must be 0 or 1.'}), 400
-
-        # preprocess features into array matching model input order
-        features = preprocess_input(features_dict)
-        # ensure we can update metadata
-        global model_metadata
-
-        # append feedback to CSV log
-        feedback_path = os.path.join('feedback_log.csv')
-        header = ','.join(feature_names) + ',label,timestamp\n'
-        row_vals = [str(features.flatten()[i]) for i in range(features.shape[1])]
-        row_vals.append(str(label_int))
-        row_vals.append(datetime.now(UTC).isoformat())
-        row_line = ','.join(row_vals) + '\n'
-        try:
-            if not os.path.exists(feedback_path):
-                with open(feedback_path, 'w', encoding='utf-8') as f:
-                    f.write(header)
-            with open(feedback_path, 'a', encoding='utf-8') as f:
-                f.write(row_line)
-        except Exception as e:
-            print(f"Failed to write feedback log: {e}")
-
-        # if model is available, perform a tiny fine-tune step on this single example
-        if globals().get('model', None) is not None:
-            try:
-                # move model to CPU for safe short training and back if CUDA available
-                device = torch.device('cpu')
-                model_cpu = globals()['model'].to(device)
-                model_cpu.train()
-
-                x = torch.tensor(features, dtype=torch.float32, device=device)
-                y = torch.tensor([[label_int]], dtype=torch.float32, device=device)
-
-                opt = torch.optim.Adam(model_cpu.parameters(), lr=1e-4) # small LR to avoid destruction of existing knowledge
-                loss_fn_local = nn.BCEWithLogitsLoss()
-
-                # small number of micro-steps to avoid overfitting
-                micro_steps = int(os.environ.get('FEEDBACK_TRAIN_STEPS', 5))
-                for _ in range(max(1, micro_steps)):
-                    opt.zero_grad()
-                    out = model_cpu(x)
-                    loss = loss_fn_local(out, y)
-                    loss.backward()
-                    opt.step()
-
-                # save a lightweight checkpoint of updated weights (non-destructive)
-                ckpt = {
-                    'model_state_dict': model_cpu.state_dict(),
-                    'feedback_timestamp': datetime.now(UTC).isoformat(),
-                    'feedback_examples': 1
-                }
-                ckpt_path = os.path.join('checkpoints', 'last_feedback.pth')
-                os.makedirs(os.path.dirname(ckpt_path), exist_ok=True)
-                torch.save(ckpt, ckpt_path)
-
-                # update global model in place
-                orig_device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-                globals()['model'].load_state_dict(model_cpu.state_dict())
-                globals()['model'] = globals()['model'].to(orig_device)
-                globals()['model'].eval()
-
-                # update model metadata counters and timestamp so UI reflects feedback updates
-                try:
-                    if model_metadata is None:
-                        model_metadata = {}
-                    model_metadata['feedback_examples'] = int(model_metadata.get('feedback_examples', 0)) + 1
-                    model_metadata['last_feedback_at'] = datetime.now(UTC).isoformat()
-                except Exception:
-                    pass
-
-                # overwrite model on server (there's already backups that were created by evaluate_model.py)
-                try:
-                    primary_path = os.path.join('checkpoints', 'best.pth')
-                    os.makedirs(os.path.dirname(primary_path), exist_ok=True)
-                    save_ckpt = {
-                        'model_state_dict': globals()['model'].state_dict(),
-                        'epoch': model_metadata.get('epoch', None),
-                        'accuracy': model_metadata.get('accuracy', None),
-                        'precision': model_metadata.get('precision', None),
-                        'recall': model_metadata.get('recall', None),
-                        'f1_score': model_metadata.get('f1_score', None),
-                        'roc_auc': model_metadata.get('roc_auc', None),
-                        'best_acc': model_metadata.get('best_acc', None),
-                        'feedback_examples': model_metadata.get('feedback_examples', 0),
-                        'last_feedback_at': model_metadata.get('last_feedback_at')
-                    }
-                    tmp_path = primary_path + '.tmp'
-                    torch.save(save_ckpt, tmp_path)
-                    try:
-                        os.replace(tmp_path, primary_path)
-                    except Exception:
-                        os.rename(tmp_path, primary_path)
-                except Exception as e:
-                    print(f"Failed to persist updated primary checkpoint: {e}")
-            except Exception as e:
-                print(f"Feedback training failed: {e}")
-
-        return jsonify({'status': 'ok', 'label_received': label_int}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/healthz')

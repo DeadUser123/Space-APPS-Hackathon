@@ -158,18 +158,5 @@
     </div>
 
     <script src="{{ url_for('static', filename='js/predict.js') }}"></script>
-
-    <!-- In-app confirmation modal for feedback (replaces browser confirm) -->
-    <div id="feedback-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="feedback-modal-title">
-        <div class="modal-overlay"></div>
-        <div class="modal-content" role="document">
-            <h3 id="feedback-modal-title">Confirm Feedback</h3>
-            <p id="feedback-modal-message">Are you sure?</p>
-            <div style="margin-top:1rem; display:flex; gap:0.5rem; justify-content:flex-end;">
-                <button id="feedback-modal-cancel" class="btn btn-secondary">Cancel</button>
-                <button id="feedback-modal-confirm" class="btn btn-primary">Confirm</button>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
