@@ -7,7 +7,7 @@ from sklearn.metrics import precision_score, recall_score, f1_score, confusion_m
 from torch.utils.data import DataLoader, TensorDataset
 import os
 import json
-from datetime import datetime
+from datetime import datetime, UTC
 import shutil
 import matplotlib
 matplotlib.use('Agg')
@@ -234,12 +234,13 @@ def plot_feature_influence(model, feature_names, out_path):
             print("Feature importances all zero; skipping")
             return
         normalized = importances / importances.sum()
-        fig, ax = plt.subplots(figsize=(10, 4))
+        # Use a narrower figure and smaller rotation to make plot less wide
+        fig, ax = plt.subplots(figsize=(8, 5))
         bars = ax.bar(feature_names, normalized, color='#2563eb')
         ax.set_title('Feature Influence (mean abs weight)')
-        plt.xticks(rotation=45, ha='right')
+        plt.xticks(rotation=30, ha='right')
         for bar, v in zip(bars, normalized):
-            ax.text(bar.get_x() + bar.get_width()/2, v + 0.001, f'{v:.2f}', ha='center')
+            ax.text(bar.get_x() + bar.get_width()/2, v + 0.001, f'{v:.2f}', ha='center', fontsize=8)
         plt.tight_layout()
         fig.savefig(out_path)
         plt.close(fig)
@@ -347,7 +348,7 @@ if __name__ == '__main__':
                 'eval_recall': float(results['recall']),
                 'eval_f1_score': float(results['f1_score']),
                 'eval_roc_auc': float(results['roc_auc']),
-                'eval_date_utc': datetime.now(datetime.UTC).isoformat() + 'Z',
+                'eval_date_utc': datetime.now(UTC).isoformat() + 'Z',
                 'eval_test_size': int(results.get('total', test_size))
             }
 
@@ -363,7 +364,7 @@ if __name__ == '__main__':
             os.makedirs(ckpt_dir, exist_ok=True)
 
             if os.path.exists(checkpoint_path):
-                backup = checkpoint_path + f'.bak.{datetime.now(datetime.UTC).strftime("%Y%m%dT%H%M%SZ")}' # create backup
+                backup = checkpoint_path + f'.bak.{datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")}' # create backup
                 try:
                     shutil.copy2(checkpoint_path, backup)
                 except Exception:
