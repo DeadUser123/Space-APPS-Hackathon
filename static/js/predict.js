@@ -19,16 +19,16 @@ function loadExample() {
     // Base values from a confirmed exoplanet (hot Jupiter-like)
     const randomVariation = () => 0.9 + (Math.random() * 0.2); // 90% to 110% of base value
     
-    document.getElementById('orbital_period').value = (3.52 * randomVariation()).toFixed(3);
-    document.getElementById('transit_duration').value = (2.8 * randomVariation()).toFixed(2);
-    document.getElementById('transit_depth').value = Math.round(1200 * randomVariation());
-    document.getElementById('planet_radius').value = (1.2 * randomVariation()).toFixed(2);
-    document.getElementById('semi_major_axis').value = (0.045 * randomVariation()).toFixed(4);
-    document.getElementById('insolation_flux').value = Math.round(350 * randomVariation());
-    document.getElementById('equilibrium_temp').value = Math.round(1450 * randomVariation());
-    document.getElementById('stellar_teff').value = Math.round(5800 * randomVariation());
-    document.getElementById('stellar_radius').value = (1.1 * randomVariation()).toFixed(2);
-    document.getElementById('stellar_logg').value = (4.4 * randomVariation()).toFixed(2);
+    document.getElementById('orbital_period').value = (Math.random() * 129995.7784).toFixed(3);
+    document.getElementById('transit_duration').value = (Math.random() * 138.54).toFixed(2);
+    document.getElementById('transit_depth').value = Math.round(Math.random() * 1541400);
+    document.getElementById('planet_radius').value = (Math.random() * 200346).toFixed(2);
+    document.getElementById('semi_major_axis').value = (Math.random() * 45).toFixed(4);
+    document.getElementById('insolation_flux').value = Math.round(Math.random() * 10947554.55);
+    document.getElementById('equilibrium_temp').value = Math.round(Math.random() * 14667);
+    document.getElementById('stellar_teff').value = Math.round(Math.random() * 50000);
+    document.getElementById('stellar_radius').value = (Math.random() * 230).toFixed(2);
+    document.getElementById('stellar_logg').value = (Math.random() * 6).toFixed(2);
 }
 
 // Single prediction form handler
