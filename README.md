@@ -58,12 +58,13 @@ flowchart TD
     VIS["Visualizations"]
   end
 
-  %% Single prediction flow
+  %% Single prediction flow (with inline feedback)
   REQ1["User sends data (JSON)"]
   PRE1["Prepare input"]
   MODEL1["Run model → prediction"]
   POST1["Format result"]
   RESP1["Send back result (JSON)"]
+  FEEDBACK["Optional user feedback → fine-tune + update model"]
 
   %% Batch flow
   FILE["Upload CSV file"]
@@ -72,27 +73,38 @@ flowchart TD
   AGG["Combine results into table"]
   RESP2["Send back results (JSON)"]
 
+  %% Structure
   CKPT --> LOAD
   LOAD --> START
   START --> API
   STATIC --> VIS
   DEPLOY --> START
 
-  PRED --> REQ1 --> PRE1 --> MODEL1 --> POST1 --> RESP1
-  BATCH --> FILE --> PARSE --> LOOP --> AGG --> RESP2
-
+  %% Flows
   API --> PRED
   API --> BATCH
   API --> INFO
   API --> VIS
+
+  %% Prediction + inline feedback
+  PRED --> REQ1 --> PRE1 --> MODEL1 --> POST1 --> RESP1 --> FEEDBACK --> CKPT
+
+  %% Batch
+  BATCH --> FILE --> PARSE --> LOOP --> AGG --> RESP2
 
   %% Styles for readability
   classDef artifact fill:#fff3e0,stroke:#b45309,stroke-width:2px,color:#000,font-size:13px,font-weight:600;
   classDef server fill:#e6fffb,stroke:#059669,stroke-width:2px,color:#000,font-size:13px,font-weight:600;
   classDef endpoint fill:#e8f6ff,stroke:#2563eb,stroke-width:2px,color:#000,font-size:13px,font-weight:600;
   classDef flow fill:#fff9db,stroke:#b7791f,stroke-width:1.5px,color:#000,font-size:12px,font-weight:600;
+  classDef feedback fill:#fef2f2,stroke:#dc2626,stroke-width:2px,color:#000,font-size:12px,font-weight:600;
 
   class CKPT,STATIC artifact;
+  class START,DEPLOY server;
+  class PRED,BATCH,INFO,VIS endpoint;
+  class REQ1,PRE1,MODEL1,POST1,RESP1,FILE,PARSE,LOOP,AGG,RESP2 flow;
+  class FEEDBACK feedback;
+```
   class START,DEPLOY server;
   class PRED,BATCH,INFO,VIS endpoint;
   class REQ1,PRE1,MODEL1,POST1,RESP1,FILE,PARSE,LOOP,AGG,RESP2 flow;
