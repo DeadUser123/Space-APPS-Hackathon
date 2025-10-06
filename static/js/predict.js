@@ -37,16 +37,16 @@ document.getElementById('predict-form').addEventListener('submit', async (e) => 
     
     // Client-side validation: ensure values (when provided) are within allowed bounds
     const bounds = {
-        orbital_period: [0.1638211, 129995.7784],
-        transit_duration: [0, 138.54],
-        transit_depth: [0, 1541400.0],
-        planet_radius: [0.08, 200346.0],
-        insolation_flux: [0, 10947554.55],
-        equilibrium_temp: [25, 14667.0],
-        stellar_teff: [2550.0, 50000.0],
-        stellar_logg: [0.047, 5.96065],
-        stellar_radius: [0.109, 229.908],
-        semi_major_axis: [0.0013702438396151, 44.9892]
+        orbital_period: [0, 139995.7784],
+        transit_duration: [0, 148.54],
+        transit_depth: [0, 1641400.0],
+        planet_radius: [0, 210346.0],
+        insolation_flux: [0, 11947554.55],
+        equilibrium_temp: [0, 15667.0],
+        stellar_teff: [0, 60000.0],
+        stellar_logg: [0, 7.96065],
+        stellar_radius: [0, 239.908],
+        semi_major_axis: [0, 49.9892]
     };
 
     const formData = new FormData(e.target);
